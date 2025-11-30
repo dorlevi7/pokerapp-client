@@ -7,11 +7,12 @@ function App() {
   const [clicks, setClicks] = React.useState([]);
   const [debugLogs, setDebugLogs] = React.useState([]); // 🪄 On-screen logs
 
-  // 🧠 Permanent backend URL (Render)
-  const SERVER_URL = "https://pokerapp-server.onrender.com";
-
-  // ✅ Always use your live Render server (for testing and production)
-  const API_BASE_URL = "https://pokerapp-server.onrender.com";
+// ✅ Automatically detect environment (local vs. production)
+const SERVER_URL = "https://pokerapp-server.onrender.com";
+const API_BASE_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000" // local dev
+    : SERVER_URL; // production (Render)
 
 
   // 🕒 Save current time (POST)
