@@ -1,0 +1,51 @@
+/* src/styles/LoginScreen.css */
+
+/* פריסת מסך */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+    background: radial-gradient(circle at top, #273c75 0, #192a56 40%, #0f172a 100%);
+}
+
+/* התאמות קלות לכרטיס */
+.login-card {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* התאמות טיפוגרפיה */
+.login-subtitle {
+    margin-bottom: 20px;
+    color: #9ca3af;
+}
+
+/* טקסט תחתון */
+.login-footer {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.login-footer a {
+    color: #22c55e;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+    .login-card {
+        padding: 20px 16px;
+    }
+
+    .login-container {
+        padding: 12px;
+    }
+}

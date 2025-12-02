@@ -1,0 +1,73 @@
+/* src/styles/SignupScreen.css */
+
+/* פריסת המסך הכללית */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+    background: radial-gradient(circle at top, #273c75 0, #192a56 40%, #0f172a 100%);
+}
+
+/* התאמות קלות לכרטיס ההרשמה */
+.signup-card {
+    max-width: 440px;
+    width: 100%;
+}
+
+/* כותרת משנה (אם נרצה לבדל אותה מהכללית) */
+.signup-subtitle {
+    margin-bottom: 20px;
+    color: #9ca3af;
+}
+
+/* שורות טופס דו־עמודתיות */
+.form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+/* הודעת שגיאה */
+.error-message {
+    color: #ef4444;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-align: left;
+}
+
+/* טקסט תחתון */
+.signup-footer {
+    margin-top: 18px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.signup-footer a {
+    color: #22c55e;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-footer a:hover {
+    text-decoration: underline;
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .signup-card {
+        padding: 20px 16px;
+    }
+
+    .signup-container {
+        padding: 12px;
+    }
+}

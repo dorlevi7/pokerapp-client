@@ -1,0 +1,77 @@
+/* src/styles/HomeScreen.css */
+
+/* פריסת המסך */
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1e293b 0, #0f172a 60%, #020617 100%);
+    padding: 16px;
+    color: #e5e7eb;
+}
+
+/* התאמות לכרטיס */
+.home-card {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+}
+
+/* פעולות משתמש */
+.home-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* עיצוב כפתורים נוספים */
+.btn-secondary {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #f9fafb;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+
+.btn-secondary:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.6);
+}
+
+.btn-danger {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #f9fafb;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.45);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+
+.btn-danger:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(239, 68, 68, 0.6);
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+    .home-card {
+        padding: 20px 16px;
+    }
+
+    .home-actions {
+        gap: 10px;
+    }
+}
