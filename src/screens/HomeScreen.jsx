@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/App.css"; // עיצוב כללי
 import "../styles/HomeScreen.css"; // עיצוב ייחודי למסך הבית
+import NavBar from "../components/NavBar";
 
 function HomeScreen() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ function HomeScreen() {
 
   return (
     <div className="home-container">
+        <NavBar />
       <div className="card home-card">
         <h1 className="title">Welcome, {user.first_name} 👋</h1>
         <p className="subtitle">

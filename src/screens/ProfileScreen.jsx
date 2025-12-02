@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/App.css"; // עיצוב כללי
 import "../styles/ProfileScreen.css"; // עיצוב למסך הפרופיל
+import NavBar from "../components/NavBar";
 
 function ProfileScreen() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function ProfileScreen() {
 
   return (
     <div className="profile-container">
+        <NavBar />
       <div className="card profile-card">
         <h1 className="title">My Profile</h1>
         <p className="subtitle">View and manage your account details</p>
