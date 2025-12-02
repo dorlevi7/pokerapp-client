@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/App.css"; // עיצוב כללי
-import "../styles/ProfileScreen.css"; // עיצוב למסך הפרופיל
+import "../styles/App.css";
+import "../styles/ProfileScreen.css";
 import NavBar from "../components/NavBar";
 
 function ProfileScreen() {
@@ -20,56 +20,61 @@ function ProfileScreen() {
   if (!user) return null;
 
   return (
-    <div className="profile-container">
-        <NavBar />
-      <div className="card profile-card">
-        <h1 className="title">My Profile</h1>
-        <p className="subtitle">View and manage your account details</p>
+    <>
+      {/* ✅ Navbar בראש */}
+      <NavBar />
 
-        <div className="profile-info">
-          <div className="profile-row">
-            <span className="label">First Name:</span>
-            <span className="value">{user.first_name}</span>
-          </div>
-          <div className="profile-row">
-            <span className="label">Last Name:</span>
-            <span className="value">{user.last_name}</span>
-          </div>
-          <div className="profile-row">
-            <span className="label">Username:</span>
-            <span className="value">{user.username}</span>
-          </div>
-          <div className="profile-row">
-            <span className="label">Email:</span>
-            <span className="value">{user.email}</span>
-          </div>
-          <div className="profile-row">
-            <span className="label">Member Since:</span>
-            <span className="value">
-              {new Date(user.created_at).toLocaleDateString("he-IL")}
-            </span>
-          </div>
-        </div>
+      {/* ✅ תוכן מתחת ל-navbar */}
+      <div className="profile-container">
+        <div className="card profile-card">
+          <h1 className="title">My Profile</h1>
+          <p className="subtitle">View and manage your account details</p>
 
-        <div className="profile-actions">
-          <button
-            className="btn-secondary"
-            onClick={() => navigate("/home")}
-          >
-            ← Back to Home
-          </button>
-          <button
-            className="btn-danger"
-            onClick={() => {
-              localStorage.clear();
-              navigate("/login");
-            }}
-          >
-            Logout
-          </button>
+          <div className="profile-info">
+            <div className="profile-row">
+              <span className="label">First Name:</span>
+              <span className="value">{user.first_name}</span>
+            </div>
+            <div className="profile-row">
+              <span className="label">Last Name:</span>
+              <span className="value">{user.last_name}</span>
+            </div>
+            <div className="profile-row">
+              <span className="label">Username:</span>
+              <span className="value">{user.username}</span>
+            </div>
+            <div className="profile-row">
+              <span className="label">Email:</span>
+              <span className="value">{user.email}</span>
+            </div>
+            <div className="profile-row">
+              <span className="label">Member Since:</span>
+              <span className="value">
+                {new Date(user.created_at).toLocaleDateString("he-IL")}
+              </span>
+            </div>
+          </div>
+
+          <div className="profile-actions">
+            <button
+              className="btn-secondary"
+              onClick={() => navigate("/home")}
+            >
+              ← Back to Home
+            </button>
+            <button
+              className="btn-danger"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

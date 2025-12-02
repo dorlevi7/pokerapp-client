@@ -27,10 +27,7 @@ function HomeScreen() {
 
   return (
     <>
-      {/* ✅ Navbar בראש הדף */}
       <NavBar />
-
-      {/* ✅ תוכן הדף מתחתיו */}
       <div className="home-container">
         <div className="card home-card">
           <h1 className="title">Welcome, {user.first_name} 👋</h1>

@@ -1,66 +1,99 @@
 .profile-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
-    background: radial-gradient(circle at top, #273c75 0, #192a56 40%, #0f172a 100%);
-    padding: 16px;
-    color: #e5e7eb;
+    background: linear-gradient(180deg, #0b1120, #111827);
+    padding-top: 90px;
+    /* מרווח ל-navbar */
 }
 
 .profile-card {
-    width: 100%;
-    max-width: 460px;
-    background: rgba(15, 23, 42, 0.92);
-    border-radius: 18px;
-    padding: 28px 24px 32px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    text-align: left;
+}
+
+.title {
     text-align: center;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(148, 163, 184, 0.4);
+    color: #22c55e;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #cbd5e1;
+    margin-bottom: 32px;
 }
 
 .profile-info {
-    text-align: left;
-    margin-top: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
 }
 
 .profile-row {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 6px;
 }
 
 .label {
-    color: #9ca3af;
-    font-weight: 500;
+    font-weight: 600;
+    color: #94a3b8;
 }
 
 .value {
-    color: #f3f4f6;
-    font-weight: 600;
+    color: #f1f5f9;
+    font-weight: 500;
 }
 
 .profile-actions {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
+}
+
+.btn-secondary,
+.btn-danger {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626);
 }
 
 /* 📱 רספונסיביות */
 @media (max-width: 600px) {
     .profile-card {
-        padding: 20px 16px;
-    }
-
-    .profile-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .label {
-        margin-bottom: 2px;
+        padding: 24px;
     }
 
     .profile-actions {
