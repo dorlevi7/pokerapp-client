@@ -14,7 +14,7 @@ function NavBar() {
   return (
     <nav className="navbar">
       <div className="navbar-logo" onClick={() => navigate("/home")}>
-        🃏 PokerApp
+        PokerApp
       </div>
 
       <div className="navbar-links">
