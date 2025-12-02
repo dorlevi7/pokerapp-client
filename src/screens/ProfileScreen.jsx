@@ -21,10 +21,7 @@ function ProfileScreen() {
 
   return (
     <>
-      {/* ✅ ה־NavBar בראש המסך */}
       <NavBar />
-
-      {/* ✅ תוכן מתחתיו */}
       <div className="profile-container">
         <div className="card profile-card">
           <h1 className="title">My Profile</h1>

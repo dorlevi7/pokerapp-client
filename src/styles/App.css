@@ -1,6 +1,6 @@
 /* src/styles/App.css */
 
-/* Reset כללי */
+/* Global reset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -14,7 +14,7 @@ body {
   min-height: 100vh;
 }
 
-/* 🎯 כרטיסים כלליים */
+/* 🎯 General cards */
 .card {
   background: rgba(15, 23, 42, 0.92);
   border-radius: 18px;
@@ -24,7 +24,7 @@ body {
   text-align: center;
 }
 
-/* 🧾 כותרות */
+/* 🧾 titles */
 .title {
   font-size: 1.8rem;
   font-weight: 700;
@@ -39,7 +39,7 @@ body {
   margin-bottom: 22px;
 }
 
-/* 🧩 שדות טופס */
+/* 🧩 Form fields */
 label {
   display: block;
   text-align: left;
@@ -65,7 +65,7 @@ input:focus {
   background: #243447;
 }
 
-/* 🟢 כפתורים */
+/* 🟢 buttons */
 .btn-primary {
   width: 100%;
   margin-top: 18px;
@@ -92,7 +92,7 @@ input:focus {
   box-shadow: 0 8px 18px rgba(22, 163, 74, 0.4);
 }
 
-/* 🔗 לינקים תחתונים */
+/* 🔗 Footer links */
 .footer-text {
   margin-top: 18px;
   font-size: 0.9rem;
@@ -109,7 +109,7 @@ input:focus {
   text-decoration: underline;
 }
 
-/* 📱 רספונסיביות */
+/* 📱 Responsiveness */
 @media (max-width: 600px) {
   .card {
     padding: 20px 16px;

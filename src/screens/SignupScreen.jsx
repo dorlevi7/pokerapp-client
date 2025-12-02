@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/App.css"; // עיצוב כללי
-import "../styles/SignupScreen.css"; // עיצוב ספציפי למסך
+import "../styles/App.css"; // General styling
+import "../styles/SignupScreen.css"; // Screen-specific styling
 
 function SignupScreen() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function SignupScreen() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // ✅ כתובת השרת (Render)
+  // ✅ Server address (Render)
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"

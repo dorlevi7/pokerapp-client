@@ -48,7 +48,7 @@
     gap: 10px;
 }
 
-/* 📱 רספונסיביות */
+/* Responsiveness */
 @media (max-width: 600px) {
     .profile-card {
         padding: 20px 16px;

@@ -1,6 +1,6 @@
 /* src/styles/HomeScreen.css */
 
-/* פריסת המסך */
+/* Screen layout */
 .home-container {
     display: flex;
     justify-content: center;
@@ -11,14 +11,14 @@
     color: #e5e7eb;
 }
 
-/* התאמות לכרטיס */
+/* Card adjustments */
 .home-card {
     width: 100%;
     max-width: 480px;
     text-align: center;
 }
 
-/* פעולות משתמש */
+/* User actions */
 .home-actions {
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
     margin-top: 20px;
 }
 
-/* עיצוב כפתורים נוספים */
+/* Additional button styling */
 .btn-secondary {
     width: 100%;
     padding: 10px 16px;
@@ -65,7 +65,7 @@
     box-shadow: 0 14px 30px rgba(239, 68, 68, 0.6);
 }
 
-/* רספונסיביות */
+/* Responsiveness */
 @media (max-width: 600px) {
     .home-card {
         padding: 20px 16px;
