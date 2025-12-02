@@ -1,8 +1,8 @@
 // src/screens/LoginScreen.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/App.css"; // עיצוב כללי
-import "../styles/LoginScreen.css"; // עיצוב למסך הספציפי
+import "../styles/App.css";
+import "../styles/LoginScreen.css";
 
 function LoginScreen() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function LoginScreen() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔗 נשתמש באותו URL כמו ב־Signup
+  // ✅ Detect environment (local or production)
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
@@ -28,7 +28,7 @@ function LoginScreen() {
     });
   };
 
-  // 🧠 התחברות אמיתית לשרת
+  // 🧠 Handle login and save user data
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -45,12 +45,13 @@ function LoginScreen() {
       setLoading(false);
 
       if (response.ok && data.success) {
-        // נשמור token בלוקאל סטורג׳ לשימוש עתידי
+        // ✅ Save both token and user info locally
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userEmail", formData.email);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
         navigate("/home");
       } else {
-        setError(data.message || "Invalid email or password");
+        setError(data.error || "Invalid email or password");
       }
     } catch (err) {
       console.error("❌ Error logging in:", err);
