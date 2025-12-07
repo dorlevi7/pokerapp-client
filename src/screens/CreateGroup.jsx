@@ -60,50 +60,51 @@ function CreateGroup() {
   };
 
   // 🟢 Create group — NOW USING SERVER API
-  const handleCreateGroup = async () => {
-    if (!groupName.trim()) {
-      alert("Please enter a group name.");
+const handleCreateGroup = async () => {
+  if (!groupName.trim()) {
+    alert("Please enter a group name.");
+    return;
+  }
+
+  if (players.length === 0) {
+    alert("Please add at least one player.");
+    return;
+  }
+
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (!storedUser) {
+    alert("User session expired. Please log in again.");
+    navigate("/login");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: groupName,
+        ownerId: storedUser.id,
+        members: players.map((p) => p.id),   // ← ← ← **החלק הקריטי**
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      console.error("Error creating group:", data.error);
+      alert("Error creating group.");
       return;
     }
 
-    if (players.length === 0) {
-      alert("Please add at least one player.");
-      return;
-    }
+    alert("Group created successfully!");
+    navigate("/home");
+  } catch (error) {
+    console.error("❌ Error creating group:", error);
+    alert("Server error.");
+  }
+};
 
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser) {
-      alert("User session expired. Please log in again.");
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: groupName,
-          ownerId: storedUser.id,
-          members: players, // array of {id,email,username}
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        console.error("Error creating group:", data.error);
-        alert("Error creating group.");
-        return;
-      }
-
-      alert("Group created successfully!");
-      navigate("/home");
-    } catch (error) {
-      console.error("❌ Error creating group:", error);
-      alert("Server error.");
-    }
-  };
 
   return (
     <>
