@@ -10,24 +10,52 @@ function CreateGroup() {
   const [playerInput, setPlayerInput] = useState("");
   const [players, setPlayers] = useState([]);
 
-  const addPlayer = () => {
+  // 🔍 Add player with backend validation
+  const addPlayer = async () => {
     const trimmed = playerInput.trim();
     if (!trimmed) return;
 
-    // Prevent duplicates
-    if (players.includes(trimmed)) {
-      alert("This player is already in the list.");
-      return;
-    }
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/users/exists?query=${encodeURIComponent(
+          trimmed
+        )}`
+      );
 
-    setPlayers((prev) => [...prev, trimmed]);
-    setPlayerInput("");
+      const data = await response.json();
+
+      if (!data.success) {
+        alert("Server error while checking user.");
+        return;
+      }
+
+      if (!data.exists) {
+        alert("No user found with that email or username.");
+        return;
+      }
+
+      const user = data.user; // { id, username, email, ... }
+
+      // Prevent duplicates
+      if (players.find((p) => p.id === user.id)) {
+        alert("This user is already in the list.");
+        return;
+      }
+
+      setPlayers((prev) => [...prev, user]);
+      setPlayerInput("");
+    } catch (err) {
+      console.error("Error checking user:", err);
+      alert("Error communicating with server.");
+    }
   };
 
+  // ❌ Remove player
   const removePlayer = (index) => {
     setPlayers((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // 🟢 Create group (temporary simulation)
   const handleCreateGroup = () => {
     if (!groupName.trim()) {
       alert("Please enter a group name.");
@@ -39,7 +67,6 @@ function CreateGroup() {
       return;
     }
 
-    // For now — just simulate creation
     console.log("Group Created:", {
       name: groupName,
       players: players,
@@ -58,6 +85,7 @@ function CreateGroup() {
           <h1 className="title">Create New Group</h1>
           <p className="subtitle">Set a name and add players.</p>
 
+          {/* Group Name */}
           <input
             type="text"
             className="input-field"
@@ -66,6 +94,7 @@ function CreateGroup() {
             onChange={(e) => setGroupName(e.target.value)}
           />
 
+          {/* Add Player */}
           <div className="player-input-row">
             <input
               type="text"
@@ -84,8 +113,8 @@ function CreateGroup() {
           {players.length > 0 && (
             <ul className="players-list">
               {players.map((p, index) => (
-                <li key={index} className="player-item">
-                  {p}
+                <li key={p.id} className="player-item">
+                  {p.username} ({p.email})
                   <button
                     className="remove-btn"
                     onClick={() => removePlayer(index)}
@@ -97,6 +126,7 @@ function CreateGroup() {
             </ul>
           )}
 
+          {/* Create Group */}
           <button className="btn-primary create-btn" onClick={handleCreateGroup}>
             Create Group
           </button>
