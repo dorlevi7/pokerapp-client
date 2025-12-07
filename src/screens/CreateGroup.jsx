@@ -71,15 +71,17 @@ const handleCreateGroup = async () => {
     return;
   }
 
+  const user = JSON.parse(localStorage.getItem("user")); 
+  const ownerId = user?.id; // 👈 שולחים לשרת
+
   try {
     const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: groupName,
-        memberIds: players.map((p) => p.id), // 👈 שולח לשרת רק IDs
+        ownerId,                          // 👈 חדש
+        memberIds: players.map((p) => p.id),
       }),
     });
 
@@ -98,6 +100,7 @@ const handleCreateGroup = async () => {
     alert("Server error. Please try again later.");
   }
 };
+
 
 
   return (
