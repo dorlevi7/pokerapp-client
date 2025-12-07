@@ -71,7 +71,7 @@ const handleCreateGroup = async () => {
     return;
   }
 
-  const user = JSON.parse(localStorage.getItem("user")); 
+  const user = JSON.parse(localStorage.getItem("user"));
   const ownerId = user?.id;
 
   // 🔥 DEBUG
@@ -88,6 +88,24 @@ const handleCreateGroup = async () => {
         memberIds: players.map((p) => p.id),
       }),
     });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      console.error("❌ Error response:", data);
+      alert(data.error || "Failed to create group.");
+      return;
+    }
+
+    alert("Group created successfully!");
+    navigate("/home");
+
+  } catch (err) {
+    console.error("❌ Error creating group:", err);
+    alert("Server error. Please try again later.");
+  }
+};
+
 
 
 
