@@ -72,40 +72,32 @@ const handleCreateGroup = async () => {
   }
 
   try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in to create a group.");
-      return;
-    }
-
     const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // 🔥 כאן התיקון!!!
       },
       body: JSON.stringify({
         name: groupName,
-        memberIds: players.map((p) => p.id),
+        memberIds: players.map((p) => p.id), // 👈 שולח לשרת רק IDs
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-      console.error("Error response:", data);
-      alert(data.error || "Failed to create group");
+      console.error("❌ Error response:", data);
+      alert(data.error || "Failed to create group.");
       return;
     }
 
     alert("Group created successfully!");
     navigate("/home");
   } catch (err) {
-    console.error("Error creating group:", err);
-    alert("Server error");
+    console.error("❌ Error creating group:", err);
+    alert("Server error. Please try again later.");
   }
 };
-
 
 
   return (
