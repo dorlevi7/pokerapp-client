@@ -5,6 +5,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import CreateGroup from "./screens/CreateGroup";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<SignupScreen />} />
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/create-group" element={<CreateGroup />} />
         </Routes>
       </div>
     </Router>
