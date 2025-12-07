@@ -10,6 +10,12 @@ function CreateGroup() {
   const [playerInput, setPlayerInput] = useState("");
   const [players, setPlayers] = useState([]);
 
+  // ✅ Detect environment like LoginScreen
+  const API_BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://pokerapp-server.onrender.com";
+
   // 🔍 Add player with backend validation
   const addPlayer = async () => {
     const trimmed = playerInput.trim();
@@ -17,14 +23,12 @@ function CreateGroup() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users/exists?query=${encodeURIComponent(
-          trimmed
-        )}`
+        `${API_BASE_URL}/api/users/exists?query=${encodeURIComponent(trimmed)}`
       );
 
       const data = await response.json();
 
-      if (!data.success) {
+      if (!response.ok || !data.success) {
         alert("Server error while checking user.");
         return;
       }
@@ -34,7 +38,7 @@ function CreateGroup() {
         return;
       }
 
-      const user = data.user; // { id, username, email, ... }
+      const user = data.user; // { id, username, email }
 
       // Prevent duplicates
       if (players.find((p) => p.id === user.id)) {
