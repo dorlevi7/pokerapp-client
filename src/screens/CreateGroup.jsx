@@ -72,7 +72,11 @@ const handleCreateGroup = async () => {
   }
 
   const user = JSON.parse(localStorage.getItem("user")); 
-  const ownerId = user?.id; // 👈 שולחים לשרת
+  const ownerId = user?.id;
+
+  // 🔥 DEBUG
+  console.log("DEBUG — LOCALSTORAGE USER:", user);
+  console.log("DEBUG — ownerId:", ownerId);
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
@@ -80,26 +84,11 @@ const handleCreateGroup = async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: groupName,
-        ownerId,                          // 👈 חדש
+        ownerId,
         memberIds: players.map((p) => p.id),
       }),
     });
 
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      console.error("❌ Error response:", data);
-      alert(data.error || "Failed to create group.");
-      return;
-    }
-
-    alert("Group created successfully!");
-    navigate("/home");
-  } catch (err) {
-    console.error("❌ Error creating group:", err);
-    alert("Server error. Please try again later.");
-  }
-};
 
 
 
