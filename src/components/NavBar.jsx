@@ -14,12 +14,14 @@ function NavBar() {
 
   return (
     <nav className="navbar">
+
+      {/* LOGO */}
       <div className="navbar-logo" onClick={() => navigate("/home")}>
         🃏 PokerApp
       </div>
 
-      {/* DESKTOP LINKS */}
-      <div className="navbar-links desktop-only">
+      {/* DESKTOP MENU */}
+      <div className="navbar-links">
         <button
           className={`nav-btn ${location.pathname === "/home" ? "active" : ""}`}
           onClick={() => navigate("/home")}
@@ -42,48 +44,49 @@ function NavBar() {
       </div>
 
       {/* MOBILE HAMBURGER ICON */}
-      <div className="hamburger mobile-only" onClick={() => setMenuOpen(!menuOpen)}>
+      <div
+        className="hamburger"
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
         ☰
       </div>
 
-      {/* MOBILE DROPDOWN */}
-      {menuOpen && (
-        <div className="mobile-menu mobile-only">
-          <button
-            className={`mobile-item ${
-              location.pathname === "/home" ? "active" : ""
-            }`}
-            onClick={() => {
-              navigate("/home");
-              setMenuOpen(false);
-            }}
-          >
-            Home
-          </button>
+      {/* MOBILE DROPDOWN MENU */}
+      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+        <button
+          className={`mobile-item ${
+            location.pathname === "/home" ? "active" : ""
+          }`}
+          onClick={() => {
+            navigate("/home");
+            setMenuOpen(false);
+          }}
+        >
+          Home
+        </button>
 
-          <button
-            className={`mobile-item ${
-              location.pathname === "/profile" ? "active" : ""
-            }`}
-            onClick={() => {
-              navigate("/profile");
-              setMenuOpen(false);
-            }}
-          >
-            Profile
-          </button>
+        <button
+          className={`mobile-item ${
+            location.pathname === "/profile" ? "active" : ""
+          }`}
+          onClick={() => {
+            navigate("/profile");
+            setMenuOpen(false);
+          }}
+        >
+          Profile
+        </button>
 
-          <button
-            className="mobile-item logout-btn"
-            onClick={() => {
-              handleLogout();
-              setMenuOpen(false);
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      )}
+        <button
+          className="mobile-item logout-btn"
+          onClick={() => {
+            handleLogout();
+            setMenuOpen(false);
+          }}
+        >
+          Logout
+        </button>
+      </div>
     </nav>
   );
 }
