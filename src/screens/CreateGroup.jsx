@@ -59,7 +59,7 @@ function CreateGroup() {
     setPlayers((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // 🟢 Create group — NOW USING SERVER API
+// 🟢 Create group — REAL request to backend
 const handleCreateGroup = async () => {
   if (!groupName.trim()) {
     alert("Please enter a group name.");
@@ -71,37 +71,31 @@ const handleCreateGroup = async () => {
     return;
   }
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  if (!storedUser) {
-    alert("User session expired. Please log in again.");
-    navigate("/login");
-    return;
-  }
-
   try {
     const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         name: groupName,
-        ownerId: storedUser.id,
-        members: players.map((p) => p.id),   // ← ← ← **החלק הקריטי**
+        memberIds: players.map((p) => p.id), // 👈 שולח לשרת רק IDs
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok || !data.success) {
-      console.error("Error creating group:", data.error);
-      alert("Error creating group.");
+      console.error("❌ Error response:", data);
+      alert(data.error || "Failed to create group.");
       return;
     }
 
     alert("Group created successfully!");
     navigate("/home");
-  } catch (error) {
-    console.error("❌ Error creating group:", error);
-    alert("Server error.");
+  } catch (err) {
+    console.error("❌ Error creating group:", err);
+    alert("Server error. Please try again later.");
   }
 };
 
