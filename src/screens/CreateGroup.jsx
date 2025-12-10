@@ -106,10 +106,6 @@ const handleCreateGroup = async () => {
   }
 };
 
-
-
-
-
   return (
     <>
       <NavBar />
