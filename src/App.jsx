@@ -1,11 +1,14 @@
 // src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CreateGroup from "./screens/CreateGroup";
+import MyGroups from "./screens/MyGroups";        // ⭐ חדש
+import GroupScreen from "./screens/GroupScreen";  // ⭐ חדש
 
 function App() {
   return (
@@ -13,11 +16,18 @@ function App() {
       <div className="app-container">
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
+
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/signup" element={<SignupScreen />} />
+
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
+
           <Route path="/create-group" element={<CreateGroup />} />
+
+          {/* ⭐ NEW ROUTES */}
+          <Route path="/my-groups" element={<MyGroups />} />
+          <Route path="/group/:groupId" element={<GroupScreen />} />
         </Routes>
       </div>
     </Router>

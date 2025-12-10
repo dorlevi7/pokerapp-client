@@ -35,33 +35,42 @@ function HomeScreen() {
             Manage your poker sessions, track your results, and connect with friends.
           </p>
 
-        <div className="home-actions">
+          <div className="home-actions">
 
-          <button
-            className="btn-primary"
-            onClick={() => navigate("/create-group")}
-          >
-            Create New Group
-          </button>
+            <button
+              className="btn-primary"
+              onClick={() => navigate("/create-group")}
+            >
+              Create New Group
+            </button>
 
-          <button
-            className="btn-primary"
-            onClick={() => alert("Coming soon!")}
-          >
-            Start New Game
-          </button>
+            {/* ⭐ NEW: Go to My Groups */}
+            <button
+              className="btn-primary"
+              onClick={() => navigate("/my-groups")}
+            >
+              View My Groups
+            </button>
 
-          <button
-            className="btn-secondary"
-            onClick={() => alert("Feature under construction!")}
-          >
-            View Statistics
-          </button>
+            <button
+              className="btn-primary"
+              onClick={() => alert("Coming soon!")}
+            >
+              Start New Game
+            </button>
 
-          <button className="btn-danger" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
+            <button
+              className="btn-secondary"
+              onClick={() => alert("Feature under construction!")}
+            >
+              View Statistics
+            </button>
+
+            <button className="btn-danger" onClick={handleLogout}>
+              Logout
+            </button>
+
+          </div>
         </div>
       </div>
     </>
