@@ -63,7 +63,7 @@ function NotificationsScreen() {
     <>
       <NavBar />
       <div className="notifications-container">
-        <div className="notifications-card">
+        <div className="card notifications-card">
           <h1 className="title">Notifications</h1>
 
           {loading && <p>Loading...</p>}
