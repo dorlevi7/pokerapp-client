@@ -44,12 +44,6 @@ function ProfileScreen() {
               <span className="label">Email:</span>
               <span className="value">{user.email}</span>
             </div>
-            <div className="profile-row">
-              <span className="label">Member Since:</span>
-              <span className="value">
-                {new Date(user.created_at).toLocaleDateString("he-IL")}
-              </span>
-            </div>
           </div>
 
           <div className="profile-actions">
