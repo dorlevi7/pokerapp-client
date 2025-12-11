@@ -20,58 +20,62 @@ function HomeScreen() {
 
   if (!user) return null;
 
-  return (
+return (
     <>
       <NavBar />
       <div className="home-container">
         <div className="card home-card">
+
+          {/* ⭐ האנימציה צריכה להיות כאן, בתוך הכרטיס */}
+          <div className="orbit-wrapper">
+            <div className="orbit-card"></div>
+          </div>
+
           <h1 className="title">Welcome, {user.first_name} 👋</h1>
           <p className="subtitle">
             Manage your poker sessions, track your results, and connect with friends.
           </p>
 
-      <div className="home-actions">
+          <div className="home-actions">
 
-<button
-  className="btn-primary btn-purple"
-  onClick={() => navigate("/create-group")}
->
-  Create New Group
-</button>
+            <button
+              className="btn-primary btn-purple"
+              onClick={() => navigate("/create-group")}
+            >
+              Create New Group
+            </button>
 
-<button
-  className="btn-primary btn-blue"
-  onClick={() => navigate("/my-groups")}
->
-  View My Groups
-</button>
+            <button
+              className="btn-primary btn-blue"
+              onClick={() => navigate("/my-groups")}
+            >
+              View My Groups
+            </button>
 
-<button
-  className="btn-primary btn-green"
-  onClick={() =>
-    toast("Coming soon!", { icon: "🃏" })
-  }
->
-  Start New Game
-</button>
+            <button
+              className="btn-primary btn-green"
+              onClick={() =>
+                toast("Coming soon!", { icon: "🃏" })
+              }
+            >
+              Start New Game
+            </button>
 
-<button
-  className="btn-primary btn-gray"
-  onClick={() =>
-    toast("Feature under construction!", { icon: "🚧" })
-  }
->
-  View Statistics
-</button>
+            <button
+              className="btn-primary btn-gray"
+              onClick={() =>
+                toast("Feature under construction!", { icon: "🚧" })
+              }
+            >
+              View Statistics
+            </button>
 
-
-      </div>
-
-
+          </div>
         </div>
       </div>
     </>
-  );
+);
+
 }
 
 export default HomeScreen;

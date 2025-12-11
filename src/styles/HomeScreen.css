@@ -1,5 +1,3 @@
-/* src/styles/HomeScreen.css */
-
 /* ============================================
    📌 Screen layout
    ============================================ */
@@ -20,6 +18,8 @@
     width: 100%;
     max-width: 480px;
     text-align: center;
+    position: relative;
+    /* ⭐ מאפשר לאנימציה לרחף סביב הכרטיס */
 }
 
 /* ============================================
@@ -65,5 +65,63 @@
 
     .home-actions {
         gap: 10px;
+    }
+}
+
+/* ============================================
+   🎴 Orbiting playing card animation (FIXED)
+   ============================================ */
+
+/* ⭐ wrapper לא משפיע על רוחב הכרטיס */
+.orbit-wrapper {
+    position: absolute;
+    top: -10px;
+    /* מעל הכרטיס */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    /* לא לוכד קליקים */
+}
+
+/* ⭐ ה"קלף" עצמו */
+.orbit-card {
+    width: 40px;
+    height: 60px;
+    background-image: url('/card.png');
+    /* שים כאן תמונה של קלף */
+    background-size: cover;
+    position: absolute;
+
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    animation: orbit 6s linear infinite;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+}
+
+/* ⭐ מסלול מעגלי */
+@keyframes orbit {
+    0% {
+        transform: rotate(0deg) translateX(140px) rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(90deg) translateX(140px) rotate(-90deg);
+    }
+
+    50% {
+        transform: rotate(180deg) translateX(140px) rotate(-180deg);
+    }
+
+    75% {
+        transform: rotate(270deg) translateX(140px) rotate(-270deg);
+    }
+
+    100% {
+        transform: rotate(360deg) translateX(140px) rotate(-360deg);
     }
 }
