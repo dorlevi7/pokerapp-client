@@ -30,41 +30,44 @@ function HomeScreen() {
             Manage your poker sessions, track your results, and connect with friends.
           </p>
 
-          <div className="home-actions">
+      <div className="home-actions">
 
-            <button
-              className="btn-primary"
-              onClick={() => navigate("/create-group")}
-            >
-              Create New Group
-            </button>
+<button
+  className="btn-primary btn-purple"
+  onClick={() => navigate("/create-group")}
+>
+  Create New Group
+</button>
 
-            <button
-              className="btn-primary"
-              onClick={() => navigate("/my-groups")}
-            >
-              View My Groups
-            </button>
+<button
+  className="btn-primary btn-blue"
+  onClick={() => navigate("/my-groups")}
+>
+  View My Groups
+</button>
 
-            <button
-              className="btn-primary"
-              onClick={() =>
-                toast("Coming soon!", { icon: "🃏" }) // ⭐ replaced alert
-              }
-            >
-              Start New Game
-            </button>
+<button
+  className="btn-primary btn-green"
+  onClick={() =>
+    toast("Coming soon!", { icon: "🃏" })
+  }
+>
+  Start New Game
+</button>
 
-            <button
-              className="btn-secondary"
-              onClick={() =>
-                toast("Feature under construction!", { icon: "🚧" }) // ⭐ replaced alert
-              }
-            >
-              View Statistics
-            </button>
+<button
+  className="btn-primary btn-gray"
+  onClick={() =>
+    toast("Feature under construction!", { icon: "🚧" })
+  }
+>
+  View Statistics
+</button>
 
-          </div>
+
+      </div>
+
+
         </div>
       </div>
     </>

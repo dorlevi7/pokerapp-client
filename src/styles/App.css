@@ -65,7 +65,7 @@ input:focus {
   background: #243447;
 }
 
-/* 🟢 buttons */
+/* 🟢 Base button style */
 .btn-primary {
   width: 100%;
   padding: 10px 16px;
@@ -119,6 +119,10 @@ input:focus {
   }
 }
 
+/* ================================
+   🎨 Base color classes
+   ================================= */
+
 .btn-blue {
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
 }
@@ -127,8 +131,72 @@ input:focus {
   filter: brightness(1.1);
 }
 
-/* Force blue button style when both classes exist */
+.btn-red {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35);
+}
+
+.btn-red:hover {
+  filter: brightness(1.1);
+}
+
+.btn-yellow {
+  background: linear-gradient(135deg, #facc15, #eab308);
+  color: #1e1e1e;
+  box-shadow: 0 10px 25px rgba(250, 204, 21, 0.3);
+}
+
+.btn-yellow:hover {
+  filter: brightness(1.08);
+}
+
+.btn-purple {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.35);
+}
+
+.btn-purple:hover {
+  filter: brightness(1.1);
+}
+
+.btn-gray {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  box-shadow: 0 10px 25px rgba(107, 114, 128, 0.35);
+}
+
+.btn-gray:hover {
+  filter: brightness(1.07);
+}
+
+.btn-green {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.45);
+}
+
+.btn-green:hover {
+  filter: brightness(1.07);
+}
+
+/* ======================================================
+   ✅ FIX: Force correct colors when used with btn-primary
+   ====================================================== */
+
+.btn-primary.btn-purple {
+  background: linear-gradient(135deg, #a855f7, #7e22ce) !important;
+  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.35) !important;
+}
+
 .btn-primary.btn-blue {
   background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.45);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.45) !important;
+}
+
+.btn-primary.btn-green {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.45) !important;
+}
+
+.btn-primary.btn-gray {
+  background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+  box-shadow: 0 10px 25px rgba(107, 114, 128, 0.35) !important;
 }

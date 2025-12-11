@@ -1,6 +1,8 @@
 /* src/styles/HomeScreen.css */
 
-/* Screen layout */
+/* ============================================
+   📌 Screen layout
+   ============================================ */
 .home-container {
     display: flex;
     justify-content: center;
@@ -11,14 +13,18 @@
     color: #e5e7eb;
 }
 
-/* Card adjustments */
+/* ============================================
+   📌 Card layout
+   ============================================ */
 .home-card {
     width: 100%;
     max-width: 480px;
     text-align: center;
 }
 
-/* User actions */
+/* ============================================
+   📌 Action buttons container
+   ============================================ */
 .home-actions {
     display: flex;
     flex-direction: column;
@@ -26,7 +32,10 @@
     margin-top: 20px;
 }
 
-/* Additional button styling */
+/* ============================================
+   📌 Old secondary button (kept for fallback)
+   NOTE: Not used anymore — new buttons come from App.css
+   ============================================ */
 .btn-secondary {
     width: 100%;
     padding: 10px 16px;
@@ -46,7 +55,9 @@
     box-shadow: 0 14px 30px rgba(37, 99, 235, 0.6);
 }
 
-/* Responsiveness */
+/* ============================================
+   📱 Responsiveness
+   ============================================ */
 @media (max-width: 600px) {
     .home-card {
         padding: 20px 16px;
