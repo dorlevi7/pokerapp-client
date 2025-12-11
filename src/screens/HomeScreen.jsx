@@ -9,7 +9,6 @@ function HomeScreen() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  // ⭐ רשימת האנימציות
   const animations = ["float", "sway", "bounce", "spin"];
   const [currentAnim, setCurrentAnim] = useState(0);
 
@@ -22,12 +21,10 @@ function HomeScreen() {
     }
   }, [navigate]);
 
-  // ⭐ החלפת אנימציה כל 4 שניות
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentAnim((prev) => (prev + 1) % animations.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -38,7 +35,7 @@ function HomeScreen() {
       <NavBar />
 
       {/* =======================================
-          🎴 FOUR FLOATING 3D CARDS
+          🎴 FLOATING 3D CARDS
       ========================================= */}
 
       {/* CARD 1 */}
@@ -85,20 +82,64 @@ function HomeScreen() {
         </div>
       </div>
 
+      {/* =======================================
+          🎲 FLOATING 3D DOUBLE-SIDED CHIPS
+      ========================================= */}
+
+      {/* MAIN CHIP */}
       <div className="chip-wrapper">
-        <img src="/chip.png" className="chip-image" alt="poker chip" />
+        <div className="chip-inner">
+          <div
+            className="chip-face chip-front"
+            style={{ backgroundImage: "url('/chip.png')" }}
+          ></div>
+          <div
+            className="chip-face chip-back"
+            style={{ backgroundImage: "url('/chip.png')" }}
+          ></div>
+        </div>
       </div>
 
+      {/* CHIP 1 */}
       <div className="chip-wrapper chip1">
-        <img src="/chip1.png" className="chip-image" alt="chip" />
+        <div className="chip-inner">
+          <div
+            className="chip-face chip-front"
+            style={{ backgroundImage: "url('/chip1.png')" }}
+          ></div>
+          <div
+            className="chip-face chip-back"
+            style={{ backgroundImage: "url('/chip1.png')" }}
+          ></div>
+        </div>
       </div>
 
+      {/* CHIP 2 */}
       <div className="chip-wrapper chip2">
-        <img src="/chip2.png" className="chip-image" alt="chip" />
+        <div className="chip-inner">
+          <div
+            className="chip-face chip-front"
+            style={{ backgroundImage: "url('/chip2.png')" }}
+          ></div>
+          <div
+            className="chip-face chip-back"
+            style={{ backgroundImage: "url('/chip2.png')" }}
+          ></div>
+        </div>
       </div>
 
+      {/* CHIP 3 */}
       <div className="chip-wrapper chip3">
-        <img src="/chip3.png" className="chip-image" alt="chip" />
+        <div className="chip-inner">
+          <div
+            className="chip-face chip-front"
+            style={{ backgroundImage: "url('/chip3.png')" }}
+          ></div>
+          <div
+            className="chip-face chip-back"
+            style={{ backgroundImage: "url('/chip3.png')" }}
+          ></div>
+        </div>
       </div>
 
       {/* =======================================
