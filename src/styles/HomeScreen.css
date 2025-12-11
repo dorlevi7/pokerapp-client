@@ -267,3 +267,171 @@
     animation: spinD 7.2s linear infinite;
     animation-delay: 1.6s;
 }
+
+/* ============================================
+   🎲 CHIP WRAPPER
+   ============================================ */
+.chip-wrapper {
+    position: fixed;
+
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 2;
+    /* מעל הקלפים אבל מתחת לכרטיס הראשי */
+}
+
+.chip-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: chipSpin 5s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes chipFloat {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+
+    20% {
+        transform: translate(-50%, -50%) translate(180px, -160px) rotate(10deg);
+    }
+
+    45% {
+        transform: translate(-50%, -50%) translate(-220px, -120px) rotate(-15deg);
+    }
+
+    70% {
+        transform: translate(-50%, -50%) translate(140px, 200px) rotate(12deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+}
+
+@keyframes chipSpin {
+    0% {
+        transform: rotateY(0deg) rotateX(10deg);
+    }
+
+    100% {
+        transform: rotateY(360deg) rotateX(10deg);
+    }
+}
+
+.chip-wrapper {
+    position: fixed;
+    top: 18%;
+    left: 22%;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 2;
+    animation: chipFloatMain 22s infinite ease-in-out;
+}
+
+.chip1 {
+    top: 35%;
+    left: 80%;
+    animation: chipFloat1 16s infinite ease-in-out;
+}
+
+.chip2 {
+    top: 75%;
+    left: 20%;
+    animation: chipFloat2 20s infinite ease-in-out;
+}
+
+.chip3 {
+    top: 82%;
+    left: 70%;
+    animation: chipFloat3 18s infinite ease-in-out;
+}
+
+@keyframes chipFloatMain {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0);
+    }
+
+    30% {
+        transform: translate(-50%, -50%) translate(-120px, 60px);
+    }
+
+    55% {
+        transform: translate(-50%, -50%) translate(90px, -140px);
+    }
+
+    80% {
+        transform: translate(-50%, -50%) translate(40px, 180px);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) translate(0, 0);
+    }
+}
+
+@keyframes chipFloat1 {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+
+    20% {
+        transform: translate(-50%, -50%) translate(180px, -160px) rotate(10deg);
+    }
+
+    45% {
+        transform: translate(-50%, -50%) translate(-220px, -120px) rotate(-15deg);
+    }
+
+    70% {
+        transform: translate(-50%, -50%) translate(140px, 200px) rotate(12deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+}
+
+@keyframes chipFloat2 {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(-50%, -50%) translate(-150px, 180px) rotate(12deg);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) translate(200px, 60px) rotate(-15deg);
+    }
+
+    75% {
+        transform: translate(-50%, -50%) translate(-120px, -160px) rotate(8deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+}
+
+@keyframes chipFloat3 {
+    0% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+
+    33% {
+        transform: translate(-50%, -50%) translate(100px, -70px) rotate(-8deg);
+    }
+
+    66% {
+        transform: translate(-50%, -50%) translate(-90px, 120px) rotate(10deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    }
+}

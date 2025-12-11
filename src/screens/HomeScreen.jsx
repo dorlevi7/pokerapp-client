@@ -85,6 +85,22 @@ function HomeScreen() {
         </div>
       </div>
 
+      <div className="chip-wrapper">
+        <img src="/chip.png" className="chip-image" alt="poker chip" />
+      </div>
+
+      <div className="chip-wrapper chip1">
+        <img src="/chip1.png" className="chip-image" alt="chip" />
+      </div>
+
+      <div className="chip-wrapper chip2">
+        <img src="/chip2.png" className="chip-image" alt="chip" />
+      </div>
+
+      <div className="chip-wrapper chip3">
+        <img src="/chip3.png" className="chip-image" alt="chip" />
+      </div>
+
       {/* =======================================
           🏠 MAIN HOME CARD
       ========================================= */}
