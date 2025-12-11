@@ -38,49 +38,62 @@ function HomeScreen() {
           🎴 FLOATING 3D CARDS
       ========================================= */}
 
-      {/* CARD 1 */}
-      <div className="card-wrapper card1-wrapper">
-        <div className="card-inner">
-          <div
-            className="card-face"
-            style={{ backgroundImage: "url('/card1.png')" }}
-          ></div>
-          <div className="card-face card-back"></div>
-        </div>
-      </div>
+{/* CARD 1 */}
+<div className="card-wrapper card1-wrapper">
+  <div className="card-inner">
+    <div
+      className="card-face card-front"
+      style={{ backgroundImage: "url('/card1.png')" }}
+    ></div>
+    <div
+      className="card-face card-back"
+      style={{ backgroundImage: "url('/card_back.png')" }}
+    ></div>
+  </div>
+</div>
 
-      {/* CARD 2 */}
-      <div className="card-wrapper card2-wrapper">
-        <div className="card-inner">
-          <div
-            className="card-face"
-            style={{ backgroundImage: "url('/card2.png')" }}
-          ></div>
-          <div className="card-face card-back"></div>
-        </div>
-      </div>
+{/* CARD 2 */}
+<div className="card-wrapper card2-wrapper">
+  <div className="card-inner">
+    <div
+      className="card-face card-front"
+      style={{ backgroundImage: "url('/card2.png')" }}
+    ></div>
+    <div
+      className="card-face card-back"
+      style={{ backgroundImage: "url('/card_back.png')" }}
+    ></div>
+  </div>
+</div>
 
-      {/* CARD 3 */}
-      <div className="card-wrapper card3-wrapper">
-        <div className="card-inner">
-          <div
-            className="card-face"
-            style={{ backgroundImage: "url('/card.png')" }}
-          ></div>
-          <div className="card-face card-back"></div>
-        </div>
-      </div>
+{/* CARD 3 */}
+<div className="card-wrapper card3-wrapper">
+  <div className="card-inner">
+    <div
+      className="card-face card-front"
+      style={{ backgroundImage: "url('/card.png')" }}
+    ></div>
+    <div
+      className="card-face card-back"
+      style={{ backgroundImage: "url('/card_back.png')" }}
+    ></div>
+  </div>
+</div>
 
-      {/* CARD 4 */}
-      <div className="card-wrapper card4-wrapper">
-        <div className="card-inner">
-          <div
-            className="card-face"
-            style={{ backgroundImage: "url('/card3.png')" }}
-          ></div>
-          <div className="card-face card-back"></div>
-        </div>
-      </div>
+{/* CARD 4 */}
+<div className="card-wrapper card4-wrapper">
+  <div className="card-inner">
+    <div
+      className="card-face card-front"
+      style={{ backgroundImage: "url('/card3.png')" }}
+    ></div>
+    <div
+      className="card-face card-back"
+      style={{ backgroundImage: "url('/card_back.png')" }}
+    ></div>
+  </div>
+</div>
+
 
       {/* =======================================
           🎲 FLOATING 3D DOUBLE-SIDED CHIPS
