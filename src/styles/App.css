@@ -118,3 +118,17 @@ input:focus {
     font-size: 1.6rem;
   }
 }
+
+.btn-blue {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.btn-blue:hover {
+  filter: brightness(1.1);
+}
+
+/* Force blue button style when both classes exist */
+.btn-primary.btn-blue {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.45);
+}
