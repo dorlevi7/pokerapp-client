@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
-import { toast } from "react-hot-toast"; // ⭐ NEW
+import { toast } from "react-hot-toast"; // ⭐ Toast only for meaningful actions
 import "../styles/Notifications.css";
 
 function NotificationsScreen() {
@@ -46,7 +46,9 @@ function NotificationsScreen() {
     fetchNotifications();
   }, [navigate, API_BASE_URL]);
 
-  // ⭐ Mark single notification
+  /* -------------------------------------------------------
+     ⭐ Mark single notification (NO toast — quiet UX)
+  ------------------------------------------------------- */
   async function markAsRead(id) {
     try {
       await fetch(`${API_BASE_URL}/api/notifications/${id}/read`, {
@@ -55,17 +57,19 @@ function NotificationsScreen() {
       });
 
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+        prev.map((n) =>
+          n.id === id ? { ...n, is_read: true } : n
+        )
       );
-
-      toast.success("Marked as read");
     } catch (err) {
       console.error("❌ Failed to mark notification:", err);
       toast.error("Failed to update notification.");
     }
   }
 
-  // ⭐⭐⭐ Mark ALL notifications as read
+  /* -------------------------------------------------------
+     ⭐⭐⭐ Mark ALL notifications as read (toast OK)
+  ------------------------------------------------------- */
   async function markAllAsRead() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
@@ -87,7 +91,9 @@ function NotificationsScreen() {
     }
   }
 
-  // 🟢 Join invitation handler
+  /* -------------------------------------------------------
+     🟢 Join invitation
+  ------------------------------------------------------- */
   async function handleJoinGroup(notification) {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
@@ -118,7 +124,9 @@ function NotificationsScreen() {
     }
   }
 
-  // ❌ Decline invitation
+  /* -------------------------------------------------------
+     ❌ Decline invitation
+  ------------------------------------------------------- */
   async function handleDecline(notification) {
     await markAsRead(notification.id);
     toast("Invitation dismissed");
@@ -127,11 +135,11 @@ function NotificationsScreen() {
   return (
     <>
       <NavBar />
+
       <div className="notifications-container">
         <div className="card notifications-card">
           <h1 className="title">Notifications</h1>
 
-          {/* ⭐ Show button only if there are unread notifications */}
           {notifications.some((n) => !n.is_read) && (
             <button className="mark-all-btn" onClick={markAllAsRead}>
               Mark all as read
@@ -155,7 +163,6 @@ function NotificationsScreen() {
                     n.is_read ? "read" : "unread"
                   }`}
                 >
-                  {/* ⭐ Special layout for group invitation */}
                   {isInvitation ? (
                     <>
                       <p className="notif-message">
