@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 import "../styles/Notifications.css";
 
 function NotificationsScreen() {
@@ -31,9 +32,12 @@ function NotificationsScreen() {
 
         if (data.success) {
           setNotifications(data.data);
+        } else {
+          toast.error("Failed to load notifications.");
         }
       } catch (err) {
         console.error("❌ Failed to load notifications:", err);
+        toast.error("Server error, please try again.");
       } finally {
         setLoading(false);
       }
@@ -53,8 +57,11 @@ function NotificationsScreen() {
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
+
+      toast.success("Marked as read");
     } catch (err) {
       console.error("❌ Failed to mark notification:", err);
+      toast.error("Failed to update notification.");
     }
   }
 
@@ -69,12 +76,14 @@ function NotificationsScreen() {
         headers: { "Content-Type": "application/json" },
       });
 
-      // Update UI instantly
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, is_read: true }))
       );
+
+      toast.success("All notifications marked as read");
     } catch (err) {
       console.error("❌ Failed to mark all notifications:", err);
+      toast.error("Failed to update notifications.");
     }
   }
 
@@ -84,24 +93,35 @@ function NotificationsScreen() {
     if (!user) return;
 
     try {
-      await fetch(`${API_BASE_URL}/api/groups/${notification.meta.groupId}/join`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id }),
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/api/groups/${notification.meta.groupId}/join`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user.id }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.error || "Failed to join group.");
+        return;
+      }
 
       await markAsRead(notification.id);
 
-      alert(`You have joined the group "${notification.meta.groupName}".`);
+      toast.success(`Joined group "${notification.meta.groupName}"`);
     } catch (err) {
       console.error("❌ Failed to join group:", err);
-      alert("Failed to join group. Try again later.");
+      toast.error("Failed to join group. Try again later.");
     }
   }
 
   // ❌ Decline invitation
   async function handleDecline(notification) {
     await markAsRead(notification.id);
+    toast("Invitation dismissed");
   }
 
   return (
@@ -165,7 +185,6 @@ function NotificationsScreen() {
                     </>
                   ) : (
                     <>
-                      {/* Default layout for all notifications */}
                       <p className="notif-message">{n.message}</p>
                       <p className="notif-time">
                         {new Date(n.created_at).toLocaleString()}

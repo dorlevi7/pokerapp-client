@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/HomeScreen.css";
 import NavBar from "../components/NavBar";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function HomeScreen() {
   const navigate = useNavigate();
@@ -47,14 +48,18 @@ function HomeScreen() {
 
             <button
               className="btn-primary"
-              onClick={() => alert("Coming soon!")}
+              onClick={() =>
+                toast("Coming soon!", { icon: "🃏" }) // ⭐ replaced alert
+              }
             >
               Start New Game
             </button>
 
             <button
               className="btn-secondary"
-              onClick={() => alert("Feature under construction!")}
+              onClick={() =>
+                toast("Feature under construction!", { icon: "🚧" }) // ⭐ replaced alert
+              }
             >
               View Statistics
             </button>

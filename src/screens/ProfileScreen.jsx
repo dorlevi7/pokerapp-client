@@ -5,11 +5,13 @@ import "../styles/ProfileScreen.css";
 
 import NavBar from "../components/NavBar";
 import EditProfileModal from "../components/EditProfileModal";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function ProfileScreen() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
+
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
@@ -17,9 +19,11 @@ function ProfileScreen() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
+      toast.error("Please log in again");
       navigate("/login");
     }
   }, [navigate]);
@@ -45,7 +49,7 @@ function ProfileScreen() {
       const data = await res.json();
 
       if (!data.success) {
-        alert("❌ Failed to update: " + data.error);
+        toast.error("Failed to update: " + data.error);
         return;
       }
 
@@ -53,11 +57,12 @@ function ProfileScreen() {
       localStorage.setItem("user", JSON.stringify(data.data));
       setUser(data.data);
 
-      alert("✅ Profile updated!");
+      toast.success("Profile updated!");
       setEditOpen(false);
+
     } catch (error) {
       console.error("Error updating user:", error);
-      alert("❌ Server error while saving changes.");
+      toast.error("Server error. Please try again.");
     }
   };
 
@@ -75,14 +80,17 @@ function ProfileScreen() {
               <span className="label">First Name:</span>
               <span className="value">{user.first_name}</span>
             </div>
+
             <div className="profile-row">
               <span className="label">Last Name:</span>
               <span className="value">{user.last_name}</span>
             </div>
+
             <div className="profile-row">
               <span className="label">Username:</span>
               <span className="value">{user.username}</span>
             </div>
+
             <div className="profile-row">
               <span className="label">Email:</span>
               <span className="value">{user.email}</span>
@@ -94,7 +102,10 @@ function ProfileScreen() {
               ✏️ Edit Profile
             </button>
 
-            <button className="btn-primary btn-blue" onClick={() => navigate("/home")}>
+            <button
+              className="btn-primary btn-blue"
+              onClick={() => navigate("/home")}
+            >
               ← Back to Home
             </button>
           </div>

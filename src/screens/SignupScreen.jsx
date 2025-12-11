@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "../styles/App.css"; // General styling
-import "../styles/SignupScreen.css"; // Screen-specific styling
+import "../styles/App.css";
+import "../styles/SignupScreen.css";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function SignupScreen() {
   const navigate = useNavigate();
@@ -15,10 +16,10 @@ function SignupScreen() {
     confirmPassword: "",
   });
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  // No need for error/success states anymore
+  // const [error, setError] = useState("");
+  // const [success, setSuccess] = useState("");
 
-  // ✅ Server address (Render)
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
@@ -33,11 +34,9 @@ function SignupScreen() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -51,14 +50,15 @@ function SignupScreen() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSuccess("✅ Account created successfully!");
-        setTimeout(() => navigate("/login"), 1500);
+        toast.success("Account created successfully!");
+
+        setTimeout(() => navigate("/login"), 1200);
       } else {
-        setError(data.message || "Signup failed");
+        toast.error(data.error || "Signup failed");
       }
     } catch (err) {
       console.error("❌ Error during signup:", err);
-      setError("Server error. Please try again later.");
+      toast.error("Server error. Please try again later.");
     }
   };
 
@@ -135,8 +135,7 @@ function SignupScreen() {
             required
           />
 
-          {error && <p className="error-message">{error}</p>}
-          {success && <p className="success-message">{success}</p>}
+          {/* ❌ Removed old inline error/success messages */}
 
           <button type="submit" className="btn-primary signup-btn">
             Sign Up

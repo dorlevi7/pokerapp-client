@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/CreateGroup.css";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function CreateGroup() {
   const navigate = useNavigate();
@@ -10,13 +11,12 @@ function CreateGroup() {
   const [playerInput, setPlayerInput] = useState("");
   const [players, setPlayers] = useState([]);
 
-  // ✅ Detect environment like LoginScreen
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
-  // 🔍 Add player with backend validation
+  /* ------------------------ 🟢 Add Player ------------------------ */
   const addPlayer = async () => {
     const trimmed = playerInput.trim();
     if (!trimmed) return;
@@ -29,105 +29,107 @@ function CreateGroup() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        alert("Server error while checking user.");
+        toast.error("Server error while checking user.");
         return;
       }
 
       if (!data.exists) {
-        alert("No user found with that email or username.");
+        toast.error("No user found with that email or username.");
         return;
       }
 
-      const user = data.user; // { id, username, email }
+      const user = data.user;
 
-      // Prevent duplicates
       if (players.find((p) => p.id === user.id)) {
-        alert("This user is already in the list.");
+        toast.error("This user is already in the list.");
         return;
       }
 
       setPlayers((prev) => [...prev, user]);
       setPlayerInput("");
+
+      toast.success(`Added ${user.username}`);
     } catch (err) {
       console.error("Error checking user:", err);
-      alert("Error communicating with server.");
+      toast.error("Server error. Please try again later.");
     }
   };
 
-  // ❌ Remove player
+  /* ------------------------ ❌ Remove Player ------------------------ */
   const removePlayer = (index) => {
+    const removed = players[index];
     setPlayers((prev) => prev.filter((_, i) => i !== index));
+    toast("Removed " + removed.username, { icon: "👤" });
   };
 
-// 🟢 Create group — REAL request to backend
-const handleCreateGroup = async () => {
-  if (!groupName.trim()) {
-    alert("Please enter a group name.");
-    return;
-  }
-
-  if (players.length === 0) {
-    alert("Please add at least one player.");
-    return;
-  }
-
-  const user = JSON.parse(localStorage.getItem("user"));
-  const ownerId = user?.id;
-
-  try {
-    // 1️⃣ Create group on backend (only owner is added automatically)
-    const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: groupName,
-        ownerId,
-        memberIds: players.map((p) => p.id), // used ONLY for invitations
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      console.error("❌ Error response:", data);
-      alert(data.error || "Failed to create group.");
+  /* ------------------------ 🟢 Create Group ------------------------ */
+  const handleCreateGroup = async () => {
+    if (!groupName.trim()) {
+      toast.error("Please enter a group name.");
       return;
     }
 
-    const group = data.data; // contains group.id, owner_id, name
+    if (players.length === 0) {
+      toast.error("Please add at least one player.");
+      return;
+    }
 
-    // 2️⃣ SEND INVITATION NOTIFICATIONS
-    const receiverIds = players
-      .map((p) => p.id)
-      .filter((id) => id !== ownerId);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const ownerId = user?.id;
 
-    if (receiverIds.length > 0) {
-      await fetch(`${API_BASE_URL}/api/notifications/send`, {
+    try {
+      // 1️⃣ Create group
+      const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          senderId: ownerId,
-          receiverIds,
-          title: "Group Invitation",
-          message: `You have been invited to join the group "${groupName}".`,
-          meta: {
-            type: "group_invitation",
-            groupId: group.id,
-            groupName: groupName,
-            inviterId: ownerId,
-          },
+          name: groupName,
+          ownerId,
+          memberIds: players.map((p) => p.id),
         }),
       });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        toast.error(data.error || "Failed to create group.");
+        return;
+      }
+
+      const group = data.data;
+
+      // 2️⃣ Send invitations
+      const receiverIds = players
+        .map((p) => p.id)
+        .filter((id) => id !== ownerId);
+
+      if (receiverIds.length > 0) {
+        await fetch(`${API_BASE_URL}/api/notifications/send`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            senderId: ownerId,
+            receiverIds,
+            title: "Group Invitation",
+            message: `You have been invited to join the group "${groupName}".`,
+            meta: {
+              type: "group_invitation",
+              groupId: group.id,
+              groupName: groupName,
+              inviterId: ownerId,
+            },
+          }),
+        });
+      }
+
+      toast.success("Group created! Invitations sent.");
+
+      setTimeout(() => navigate("/home"), 1200);
+    } catch (err) {
+      console.error("❌ Error creating group:", err);
+      toast.error("Server error. Please try again later.");
     }
-
-    alert("Group created! Invitations sent.");
-    navigate("/home");
-
-  } catch (err) {
-    console.error("❌ Error creating group:", err);
-    alert("Server error. Please try again later.");
-  }
-};
+  };
 
   return (
     <>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/GroupScreen.css";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function GroupScreen() {
   const { groupId } = useParams();
@@ -9,7 +10,7 @@ function GroupScreen() {
 
   const [groupName, setGroupName] = useState("");
   const [ownerId, setOwnerId] = useState(null);
-  const [ownerName, setOwnerName] = useState(""); // 👈 NEW
+  const [ownerName, setOwnerName] = useState("");
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,21 +22,21 @@ function GroupScreen() {
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
-        // 1️⃣ Fetch members
+        /* ---------------------- 1️⃣ Fetch Members ---------------------- */
         const membersRes = await fetch(
           `${API_BASE_URL}/api/groups/${groupId}/members`
         );
         const membersData = await membersRes.json();
 
         if (!membersRes.ok || !membersData.success) {
-          alert("Failed to load group members.");
+          toast.error("Failed to load group members.");
           setLoading(false);
           return;
         }
 
         setMembers(membersData.data);
 
-        // 2️⃣ Fetch group list to get name + ownerId
+        /* ---------------------- 2️⃣ Fetch Group Info ---------------------- */
         const user = JSON.parse(localStorage.getItem("user"));
         const userId = user?.id;
 
@@ -56,16 +57,16 @@ function GroupScreen() {
             setGroupName(found.name);
             setOwnerId(found.owner_id);
 
-            // ⭐ NEW — find owner name using member list
             const owner = membersData.data.find(
               (m) => m.id === found.owner_id
             );
+
             if (owner) setOwnerName(owner.username);
           }
         }
       } catch (error) {
         console.error("❌ Error loading group screen:", error);
-        alert("Server error.");
+        toast.error("Server error.");
       } finally {
         setLoading(false);
       }
@@ -80,13 +81,9 @@ function GroupScreen() {
 
       <div className="group-container">
         <div className="card group-card">
-          {/* ❌ Removed "#groupId" */}
           <h1 className="title">{groupName || "Group"}</h1>
 
-          {/* ⭐ Show owner username instead of ID */}
-          {ownerName && (
-            <p className="subtitle">Owner: {ownerName}</p>
-          )}
+          {ownerName && <p className="subtitle">Owner: {ownerName}</p>}
 
           {loading && <p>Loading group...</p>}
 
@@ -110,7 +107,7 @@ function GroupScreen() {
 
               <button
                 className="btn-primary start-btn"
-                onClick={() => alert("Game screen coming soon")}
+                onClick={() => toast("Game screen coming soon!", { icon: "🎮" })}
               >
                 Start Game
               </button>

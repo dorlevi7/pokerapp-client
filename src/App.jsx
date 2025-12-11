@@ -2,6 +2,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
+import { Toaster } from "react-hot-toast";  // ⭐ NEW IMPORT
+
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -15,6 +17,20 @@ function App() {
   return (
     <Router>
       <div className="app-container">
+
+        {/* ⭐ GLOBAL TOASTER — חובה */}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 2500,
+            style: {
+              background: "#1e293b",
+              color: "#fff",
+              borderRadius: "8px",
+            },
+          }}
+        />
+
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
 

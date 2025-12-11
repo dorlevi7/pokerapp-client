@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/LoginScreen.css";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function LoginScreen() {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ function LoginScreen() {
     password: "",
   });
 
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // ✅ Detect environment (local or production)
@@ -28,10 +28,9 @@ function LoginScreen() {
     });
   };
 
-  // 🧠 Handle login and save user data
+  // 🧠 Handle login & save user data
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
@@ -45,17 +44,21 @@ function LoginScreen() {
       setLoading(false);
 
       if (response.ok && data.success) {
-        // ✅ Save both token and user info locally
+        // ⭐ Success toast
+        toast.success("Logged in successfully!");
+
+        // Save token + user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
         navigate("/home");
       } else {
-        setError(data.error || "Invalid email or password");
+        // ❌ Error toast
+        toast.error(data.error || "Invalid email or password");
       }
     } catch (err) {
       console.error("❌ Error logging in:", err);
-      setError("Server error. Please try again later.");
+      toast.error("Server error. Please try again later.");
       setLoading(false);
     }
   };
@@ -86,8 +89,6 @@ function LoginScreen() {
             onChange={handleChange}
             required
           />
-
-          {error && <p className="error-message">{error}</p>}
 
           <button type="submit" className="btn-primary login-btn" disabled={loading}>
             {loading ? "Logging in..." : "Login"}

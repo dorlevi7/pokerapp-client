@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
+import { toast } from "react-hot-toast";   // ⭐ NEW
 import "../styles/MyGroups.css";
 
 function MyGroups() {
@@ -19,7 +20,7 @@ function MyGroups() {
             const userId = user?.id;
 
             if (!userId) {
-                alert("User not found. Please log in again.");
+                toast.error("User not found. Please log in again.");
                 navigate("/login");
                 return;
             }
@@ -35,14 +36,14 @@ function MyGroups() {
                 console.log("📥 Groups response:", data);
 
                 if (!response.ok || !data.success) {
-                    alert(data.error || "Failed to load groups.");
+                    toast.error(data.error || "Failed to load groups.");
                     return;
                 }
 
                 setGroups(data.data || []);
             } catch (err) {
                 console.error("❌ Error fetching groups:", err);
-                alert("Server error.");
+                toast.error("Server error. Please try again.");
             } finally {
                 setLoading(false);
             }
@@ -73,17 +74,16 @@ function MyGroups() {
                                     <div className="group-info">
                                         <span className="group-name">{g.name}</span>
 
-                                        {/* ⭐ הצגת שם הבעלים במקום owner_id */}
                                         {g.owner_username && (
                                             <small className="group-owner">
                                                 (Owner: {g.owner_username})
                                             </small>
                                         )}
 
-                                        {/* fallback אם אין username */}
                                         {!g.owner_username && g.owner_first_name && (
                                             <small className="group-owner">
-                                                (Owner: {g.owner_first_name} {g.owner_last_name || ""})
+                                                (Owner: {g.owner_first_name}{" "}
+                                                {g.owner_last_name || ""})
                                             </small>
                                         )}
                                     </div>
