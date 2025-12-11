@@ -42,6 +42,7 @@ function NotificationsScreen() {
     fetchNotifications();
   }, [navigate, API_BASE_URL]);
 
+  // ⭐ Mark single notification
   async function markAsRead(id) {
     try {
       await fetch(`${API_BASE_URL}/api/notifications/${id}/read`, {
@@ -50,12 +51,30 @@ function NotificationsScreen() {
       });
 
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === id ? { ...n, is_read: true } : n
-        )
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
     } catch (err) {
       console.error("❌ Failed to mark notification:", err);
+    }
+  }
+
+  // ⭐⭐⭐ Mark ALL notifications as read
+  async function markAllAsRead() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    try {
+      await fetch(`${API_BASE_URL}/api/notifications/user/${user.id}/read-all`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      // Update UI instantly
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, is_read: true }))
+      );
+    } catch (err) {
+      console.error("❌ Failed to mark all notifications:", err);
     }
   }
 
@@ -65,6 +84,13 @@ function NotificationsScreen() {
       <div className="notifications-container">
         <div className="card notifications-card">
           <h1 className="title">Notifications</h1>
+
+          {/* ⭐ Show button only if there are unread notifications */}
+          {notifications.some((n) => !n.is_read) && (
+            <button className="mark-all-btn" onClick={markAllAsRead}>
+              Mark all as read
+            </button>
+          )}
 
           {loading && <p>Loading...</p>}
 

@@ -64,3 +64,23 @@
     cursor: pointer;
     font-weight: 600;
 }
+
+.mark-all-btn {
+    width: 100%;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #f9fafb;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+
+.mark-all-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.6);
+}
