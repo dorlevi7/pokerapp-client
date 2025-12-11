@@ -331,25 +331,25 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 2;
-    animation: chipFloatMain 22s infinite ease-in-out;
+    animation: chipFloatMain 62s infinite ease-in-out;
 }
 
 .chip1 {
     top: 35%;
     left: 80%;
-    animation: chipFloat1 16s infinite ease-in-out;
+    animation: chipFloat1 56s infinite ease-in-out;
 }
 
 .chip2 {
     top: 75%;
     left: 20%;
-    animation: chipFloat2 20s infinite ease-in-out;
+    animation: chipFloat2 60s infinite ease-in-out;
 }
 
 .chip3 {
     top: 82%;
     left: 70%;
-    animation: chipFloat3 18s infinite ease-in-out;
+    animation: chipFloat3 58s infinite ease-in-out;
 }
 
 @keyframes chipFloatMain {
