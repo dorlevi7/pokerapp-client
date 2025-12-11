@@ -9,6 +9,7 @@ function GroupScreen() {
 
   const [groupName, setGroupName] = useState("");
   const [ownerId, setOwnerId] = useState(null);
+  const [ownerName, setOwnerName] = useState(""); // 👈 NEW
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +35,7 @@ function GroupScreen() {
 
         setMembers(membersData.data);
 
-        // 2️⃣ Fetch groups of the user for group name + owner
+        // 2️⃣ Fetch group list to get name + ownerId
         const user = JSON.parse(localStorage.getItem("user"));
         const userId = user?.id;
 
@@ -54,6 +55,12 @@ function GroupScreen() {
           if (found) {
             setGroupName(found.name);
             setOwnerId(found.owner_id);
+
+            // ⭐ NEW — find owner name using member list
+            const owner = membersData.data.find(
+              (m) => m.id === found.owner_id
+            );
+            if (owner) setOwnerName(owner.username);
           }
         }
       } catch (error) {
@@ -73,12 +80,12 @@ function GroupScreen() {
 
       <div className="group-container">
         <div className="card group-card">
-          <h1 className="title">
-            {groupName ? groupName : "Group"} #{groupId}
-          </h1>
+          {/* ❌ Removed "#groupId" */}
+          <h1 className="title">{groupName || "Group"}</h1>
 
-          {ownerId && (
-            <p className="subtitle">Owner: User #{ownerId}</p>
+          {/* ⭐ Show owner username instead of ID */}
+          {ownerName && (
+            <p className="subtitle">Owner: {ownerName}</p>
           )}
 
           {loading && <p>Loading group...</p>}

@@ -72,9 +72,18 @@ function MyGroups() {
                                 <li key={g.id} className="group-item">
                                     <div className="group-info">
                                         <span className="group-name">{g.name}</span>
-                                        {g.owner_id && (
+
+                                        {/* ⭐ הצגת שם הבעלים במקום owner_id */}
+                                        {g.owner_username && (
                                             <small className="group-owner">
-                                                (Owner: User #{g.owner_id})
+                                                (Owner: {g.owner_username})
+                                            </small>
+                                        )}
+
+                                        {/* fallback אם אין username */}
+                                        {!g.owner_username && g.owner_first_name && (
+                                            <small className="group-owner">
+                                                (Owner: {g.owner_first_name} {g.owner_last_name || ""})
                                             </small>
                                         )}
                                     </div>
