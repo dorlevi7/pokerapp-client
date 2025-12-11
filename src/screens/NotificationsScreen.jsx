@@ -78,6 +78,32 @@ function NotificationsScreen() {
     }
   }
 
+  // 🟢 Join invitation handler
+  async function handleJoinGroup(notification) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+
+    try {
+      await fetch(`${API_BASE_URL}/api/groups/${notification.meta.groupId}/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      await markAsRead(notification.id);
+
+      alert(`You have joined the group "${notification.meta.groupName}".`);
+    } catch (err) {
+      console.error("❌ Failed to join group:", err);
+      alert("Failed to join group. Try again later.");
+    }
+  }
+
+  // ❌ Decline invitation
+  async function handleDecline(notification) {
+    await markAsRead(notification.id);
+  }
+
   return (
     <>
       <NavBar />
@@ -99,28 +125,65 @@ function NotificationsScreen() {
           )}
 
           <ul className="notification-list">
-            {notifications.map((n) => (
-              <li
-                key={n.id}
-                className={`notification-item ${
-                  n.is_read ? "read" : "unread"
-                }`}
-              >
-                <p className="notif-message">{n.message}</p>
-                <p className="notif-time">
-                  {new Date(n.created_at).toLocaleString()}
-                </p>
+            {notifications.map((n) => {
+              const isInvitation = n.meta?.type === "group_invitation";
 
-                {!n.is_read && (
-                  <button
-                    className="mark-btn"
-                    onClick={() => markAsRead(n.id)}
-                  >
-                    Mark as read
-                  </button>
-                )}
-              </li>
-            ))}
+              return (
+                <li
+                  key={n.id}
+                  className={`notification-item ${
+                    n.is_read ? "read" : "unread"
+                  }`}
+                >
+                  {/* ⭐ Special layout for group invitation */}
+                  {isInvitation ? (
+                    <>
+                      <p className="notif-message">
+                        <strong>{n.sender_username}</strong> invited you to join
+                        the group <strong>"{n.meta.groupName}"</strong>.
+                      </p>
+
+                      <div className="invite-actions">
+                        <button
+                          className="join-btn"
+                          onClick={() => handleJoinGroup(n)}
+                        >
+                          Join Group
+                        </button>
+
+                        <button
+                          className="decline-btn"
+                          onClick={() => handleDecline(n)}
+                        >
+                          Decline
+                        </button>
+                      </div>
+
+                      <p className="notif-time">
+                        {new Date(n.created_at).toLocaleString()}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      {/* Default layout for all notifications */}
+                      <p className="notif-message">{n.message}</p>
+                      <p className="notif-time">
+                        {new Date(n.created_at).toLocaleString()}
+                      </p>
+
+                      {!n.is_read && (
+                        <button
+                          className="mark-btn"
+                          onClick={() => markAsRead(n.id)}
+                        >
+                          Mark as read
+                        </button>
+                      )}
+                    </>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

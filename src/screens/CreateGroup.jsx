@@ -75,13 +75,14 @@ const handleCreateGroup = async () => {
   const ownerId = user?.id;
 
   try {
+    // 1️⃣ Create group on backend (only owner is added automatically)
     const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: groupName,
         ownerId,
-        memberIds: players.map((p) => p.id),
+        memberIds: players.map((p) => p.id), // used ONLY for invitations
       }),
     });
 
@@ -93,25 +94,33 @@ const handleCreateGroup = async () => {
       return;
     }
 
-// ⭐⭐⭐ SEND NOTIFICATIONS — SINGLE REQUEST ⭐⭐⭐
-const receiverIds = players
-  .map((p) => p.id)
-  .filter((id) => id !== ownerId); // לא שולחים לבעל הקבוצה עצמו
+    const group = data.data; // contains group.id, owner_id, name
 
-if (receiverIds.length > 0) {
-  await fetch(`${API_BASE_URL}/api/notifications/send`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      senderId: ownerId,
-      receiverIds, // ⭐ array as required
-      title: "New Group Created",
-      message: `You were added to the group "${groupName}".`,
-    }),
-  });
-}
+    // 2️⃣ SEND INVITATION NOTIFICATIONS
+    const receiverIds = players
+      .map((p) => p.id)
+      .filter((id) => id !== ownerId);
 
-    alert("Group created successfully!");
+    if (receiverIds.length > 0) {
+      await fetch(`${API_BASE_URL}/api/notifications/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          senderId: ownerId,
+          receiverIds,
+          title: "Group Invitation",
+          message: `You have been invited to join the group "${groupName}".`,
+          meta: {
+            type: "group_invitation",
+            groupId: group.id,
+            groupName: groupName,
+            inviterId: ownerId,
+          },
+        }),
+      });
+    }
+
+    alert("Group created! Invitations sent.");
     navigate("/home");
 
   } catch (err) {
