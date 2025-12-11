@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/HomeScreen.css";
 import NavBar from "../components/NavBar";
-import { toast } from "react-hot-toast"; // ⭐ NEW
+import { toast } from "react-hot-toast";
 
 function HomeScreen() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+
+  // ⭐ רשימת האנימציות
+  const animations = ["float", "sway", "bounce", "spin"];
+  const [currentAnim, setCurrentAnim] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -18,26 +22,80 @@ function HomeScreen() {
     }
   }, [navigate]);
 
+  // ⭐ החלפת אנימציה כל 4 שניות
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentAnim((prev) => (prev + 1) % animations.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   if (!user) return null;
 
-return (
+  return (
     <>
       <NavBar />
+
+      {/* =======================================
+          🎴 FOUR FLOATING 3D CARDS
+      ========================================= */}
+
+      {/* CARD 1 */}
+      <div className="card-wrapper card1-wrapper">
+        <div className="card-inner">
+          <div
+            className="card-face"
+            style={{ backgroundImage: "url('/card1.png')" }}
+          ></div>
+          <div className="card-face card-back"></div>
+        </div>
+      </div>
+
+      {/* CARD 2 */}
+      <div className="card-wrapper card2-wrapper">
+        <div className="card-inner">
+          <div
+            className="card-face"
+            style={{ backgroundImage: "url('/card2.png')" }}
+          ></div>
+          <div className="card-face card-back"></div>
+        </div>
+      </div>
+
+      {/* CARD 3 */}
+      <div className="card-wrapper card3-wrapper">
+        <div className="card-inner">
+          <div
+            className="card-face"
+            style={{ backgroundImage: "url('/card.png')" }}
+          ></div>
+          <div className="card-face card-back"></div>
+        </div>
+      </div>
+
+      {/* CARD 4 */}
+      <div className="card-wrapper card4-wrapper">
+        <div className="card-inner">
+          <div
+            className="card-face"
+            style={{ backgroundImage: "url('/card3.png')" }}
+          ></div>
+          <div className="card-face card-back"></div>
+        </div>
+      </div>
+
+      {/* =======================================
+          🏠 MAIN HOME CARD
+      ========================================= */}
       <div className="home-container">
         <div className="card home-card">
-
-          {/* ⭐ האנימציה צריכה להיות כאן, בתוך הכרטיס */}
-          <div className="orbit-wrapper">
-            <div className="orbit-card"></div>
-          </div>
-
           <h1 className="title">Welcome, {user.first_name} 👋</h1>
           <p className="subtitle">
             Manage your poker sessions, track your results, and connect with friends.
           </p>
 
           <div className="home-actions">
-
             <button
               className="btn-primary btn-purple"
               onClick={() => navigate("/create-group")}
@@ -69,13 +127,11 @@ return (
             >
               View Statistics
             </button>
-
           </div>
         </div>
       </div>
     </>
-);
-
+  );
 }
 
 export default HomeScreen;
