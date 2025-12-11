@@ -138,7 +138,7 @@ function SignupScreen() {
           {error && <p className="error-message">{error}</p>}
           {success && <p className="success-message">{success}</p>}
 
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="btn-primary signup-btn">
             Sign Up
           </button>
         </form>

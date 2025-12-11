@@ -17,12 +17,6 @@ function HomeScreen() {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
-
   if (!user) return null;
 
   return (
@@ -44,7 +38,6 @@ function HomeScreen() {
               Create New Group
             </button>
 
-            {/* ⭐ NEW: Go to My Groups */}
             <button
               className="btn-primary"
               onClick={() => navigate("/my-groups")}
@@ -64,10 +57,6 @@ function HomeScreen() {
               onClick={() => alert("Feature under construction!")}
             >
               View Statistics
-            </button>
-
-            <button className="btn-danger" onClick={handleLogout}>
-              Logout
             </button>
 
           </div>

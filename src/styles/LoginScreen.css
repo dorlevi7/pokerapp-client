@@ -22,6 +22,10 @@
     color: #9ca3af;
 }
 
+.login-btn {
+    margin-top: 18px;
+}
+
 /* Footer text */
 .login-footer {
     margin-top: 16px;

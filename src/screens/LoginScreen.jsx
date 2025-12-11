@@ -89,7 +89,7 @@ function LoginScreen() {
 
           {error && <p className="error-message">{error}</p>}
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button type="submit" className="btn-primary login-btn" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>

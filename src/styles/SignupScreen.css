@@ -57,6 +57,10 @@
     text-decoration: underline;
 }
 
+.signup-btn {
+    margin-top: 18px;
+}
+
 /* Responsiveness */
 @media (max-width: 600px) {
     .form-row {

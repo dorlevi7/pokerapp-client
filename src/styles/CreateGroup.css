@@ -44,6 +44,7 @@
 
 /* Small button */
 .small-btn {
+    margin-top: 18px;
     padding: 10px 16px;
     border-radius: 999px;
     white-space: nowrap;

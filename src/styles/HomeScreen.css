@@ -46,25 +46,6 @@
     box-shadow: 0 14px 30px rgba(37, 99, 235, 0.6);
 }
 
-.btn-danger {
-    width: 100%;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: #f9fafb;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.45);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
-}
-
-.btn-danger:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
-    box-shadow: 0 14px 30px rgba(239, 68, 68, 0.6);
-}
-
 /* Responsiveness */
 @media (max-width: 600px) {
     .home-card {

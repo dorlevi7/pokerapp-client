@@ -53,15 +53,6 @@ function ProfileScreen() {
             >
               ← Back to Home
             </button>
-            <button
-              className="btn-danger"
-              onClick={() => {
-                localStorage.clear();
-                navigate("/login");
-              }}
-            >
-              Logout
-            </button>
           </div>
         </div>
       </div>
