@@ -74,10 +74,6 @@ const handleCreateGroup = async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const ownerId = user?.id;
 
-  // 🔥 DEBUG
-  console.log("DEBUG — LOCALSTORAGE USER:", user);
-  console.log("DEBUG — ownerId:", ownerId);
-
   try {
     const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
       method: "POST",
@@ -96,6 +92,24 @@ const handleCreateGroup = async () => {
       alert(data.error || "Failed to create group.");
       return;
     }
+
+// ⭐⭐⭐ SEND NOTIFICATIONS — SINGLE REQUEST ⭐⭐⭐
+const receiverIds = players
+  .map((p) => p.id)
+  .filter((id) => id !== ownerId); // לא שולחים לבעל הקבוצה עצמו
+
+if (receiverIds.length > 0) {
+  await fetch(`${API_BASE_URL}/api/notifications/send`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      senderId: ownerId,
+      receiverIds, // ⭐ array as required
+      title: "New Group Created",
+      message: `You were added to the group "${groupName}".`,
+    }),
+  });
+}
 
     alert("Group created successfully!");
     navigate("/home");

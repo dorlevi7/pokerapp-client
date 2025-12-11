@@ -22,11 +22,19 @@ function NavBar() {
 
       {/* DESKTOP MENU */}
       <div className="navbar-links">
+
         <button
           className={`nav-btn ${location.pathname === "/home" ? "active" : ""}`}
           onClick={() => navigate("/home")}
         >
           Home
+        </button>
+
+        <button
+          className={`nav-btn ${location.pathname === "/notifications" ? "active" : ""}`}
+          onClick={() => navigate("/notifications")}
+        >
+          Notifications
         </button>
 
         <button
@@ -53,10 +61,9 @@ function NavBar() {
 
       {/* MOBILE DROPDOWN MENU */}
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+
         <button
-          className={`mobile-item ${
-            location.pathname === "/home" ? "active" : ""
-          }`}
+          className={`mobile-item ${location.pathname === "/home" ? "active" : ""}`}
           onClick={() => {
             navigate("/home");
             setMenuOpen(false);
@@ -66,9 +73,17 @@ function NavBar() {
         </button>
 
         <button
-          className={`mobile-item ${
-            location.pathname === "/profile" ? "active" : ""
-          }`}
+          className={`mobile-item ${location.pathname === "/notifications" ? "active" : ""}`}
+          onClick={() => {
+            navigate("/notifications");
+            setMenuOpen(false);
+          }}
+        >
+          Notifications
+        </button>
+
+        <button
+          className={`mobile-item ${location.pathname === "/profile" ? "active" : ""}`}
           onClick={() => {
             navigate("/profile");
             setMenuOpen(false);

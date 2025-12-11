@@ -7,8 +7,9 @@ import SignupScreen from "./screens/SignupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CreateGroup from "./screens/CreateGroup";
-import MyGroups from "./screens/MyGroups";        // ⭐ חדש
-import GroupScreen from "./screens/GroupScreen";  // ⭐ חדש
+import MyGroups from "./screens/MyGroups";
+import GroupScreen from "./screens/GroupScreen";
+import NotificationsScreen from "./screens/NotificationsScreen"; // ⭐ NEW
 
 function App() {
   return (
@@ -25,9 +26,11 @@ function App() {
 
           <Route path="/create-group" element={<CreateGroup />} />
 
-          {/* ⭐ NEW ROUTES */}
           <Route path="/my-groups" element={<MyGroups />} />
           <Route path="/group/:groupId" element={<GroupScreen />} />
+
+          {/* ⭐ NEW NOTIFICATIONS ROUTE */}
+          <Route path="/notifications" element={<NotificationsScreen />} />
         </Routes>
       </div>
     </Router>
