@@ -44,108 +44,115 @@ function NavBar() {
   };
 
   return (
-    <nav className="navbar">
-      {/* LOGO */}
-      <div className="navbar-logo" onClick={() => navigate("/home")}>
-        🃏 PokerApp
-      </div>
+    <>
+      {/* ⭐ OVERLAY BEHIND MENU WHEN OPEN */}
+      {menuOpen && (
+        <div
+          className="menu-overlay"
+          onClick={() => setMenuOpen(false)}
+        ></div>
+      )}
 
-      {/* DESKTOP MENU */}
-      <div className="navbar-links">
-        <button
-          className={`nav-btn ${location.pathname === "/home" ? "active" : ""}`}
-          onClick={() => navigate("/home")}
-        >
-          Home
-        </button>
+      <nav className="navbar">
 
-        {/* ⭐ Notifications with Badge */}
-        <div className="notif-wrapper">
-          <button
-            className={`nav-btn ${
-              location.pathname === "/notifications" ? "active" : ""
-            }`}
-            onClick={() => navigate("/notifications")}
-          >
-            Notifications
-          </button>
-
-          {unreadCount > 0 && (
-            <span className="notif-badge">{unreadCount}</span>
-          )}
+        {/* LOGO */}
+        <div className="navbar-logo" onClick={() => navigate("/home")}>
+          🃏 PokerApp
         </div>
 
-        <button
-          className={`nav-btn ${
-            location.pathname === "/profile" ? "active" : ""
-          }`}
-          onClick={() => navigate("/profile")}
-        >
-          Profile
-        </button>
+        {/* DESKTOP MENU */}
+        <div className="navbar-links">
+          <button
+            className={`nav-btn ${location.pathname === "/home" ? "active" : ""}`}
+            onClick={() => navigate("/home")}
+          >
+            Home
+          </button>
 
-        <button className="nav-btn logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
+          {/* ⭐ Notifications with Badge */}
+          <div className="notif-wrapper">
+            <button
+              className={`nav-btn ${
+                location.pathname === "/notifications" ? "active" : ""
+              }`}
+              onClick={() => navigate("/notifications")}
+            >
+              Notifications
+            </button>
 
-      {/* MOBILE HAMBURGER ICON */}
-      <div className="hamburger" onClick={() => setMenuOpen((prev) => !prev)}>
-        ☰
-      </div>
+            {unreadCount > 0 && (
+              <span className="notif-badge">{unreadCount}</span>
+            )}
+          </div>
 
-      {/* MOBILE MENU */}
-      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-        <button
-          className={`mobile-item ${
-            location.pathname === "/home" ? "active" : ""
-          }`}
-          onClick={() => {
-            navigate("/home");
-            setMenuOpen(false);
-          }}
-        >
-          Home
-        </button>
+          <button
+            className={`nav-btn ${location.pathname === "/profile" ? "active" : ""}`}
+            onClick={() => navigate("/profile")}
+          >
+            Profile
+          </button>
 
-        <button
-          className={`mobile-item ${
-            location.pathname === "/notifications" ? "active" : ""
-          }`}
-          onClick={() => {
-            navigate("/notifications");
-            setMenuOpen(false);
-          }}
-        >
-          Notifications
-          {unreadCount > 0 && (
-            <span className="notif-badge mobile-badge">{unreadCount}</span>
-          )}
-        </button>
+          <button className="nav-btn logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
 
-        <button
-          className={`mobile-item ${
-            location.pathname === "/profile" ? "active" : ""
-          }`}
-          onClick={() => {
-            navigate("/profile");
-            setMenuOpen(false);
-          }}
-        >
-          Profile
-        </button>
+        {/* MOBILE HAMBURGER ICON */}
+        <div className="hamburger" onClick={() => setMenuOpen((prev) => !prev)}>
+          ☰
+        </div>
 
-        <button
-          className="mobile-item logout-btn"
-          onClick={() => {
-            handleLogout();
-            setMenuOpen(false);
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    </nav>
+        {/* MOBILE MENU */}
+        <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+          <button
+            className={`mobile-item ${location.pathname === "/home" ? "active" : ""}`}
+            onClick={() => {
+              navigate("/home");
+              setMenuOpen(false);
+            }}
+          >
+            Home
+          </button>
+
+          <button
+            className={`mobile-item ${
+              location.pathname === "/notifications" ? "active" : ""
+            }`}
+            onClick={() => {
+              navigate("/notifications");
+              setMenuOpen(false);
+            }}
+          >
+            Notifications
+            {unreadCount > 0 && (
+              <span className="notif-badge mobile-badge">{unreadCount}</span>
+            )}
+          </button>
+
+          <button
+            className={`mobile-item ${
+              location.pathname === "/profile" ? "active" : ""
+            }`}
+            onClick={() => {
+              navigate("/profile");
+              setMenuOpen(false);
+            }}
+          >
+            Profile
+          </button>
+
+          <button
+            className="mobile-item logout-btn"
+            onClick={() => {
+              handleLogout();
+              setMenuOpen(false);
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+    </>
   );
 }
 
