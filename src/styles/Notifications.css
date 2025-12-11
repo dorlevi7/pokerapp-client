@@ -134,3 +134,38 @@
     transform: translateY(-2px);
     box-shadow: 0 10px 22px rgba(220, 38, 38, 0.5);
 }
+
+/* --------------------------------------------------- */
+/* 🔔 NOTIFICATION BADGE */
+/* --------------------------------------------------- */
+
+.notif-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Badge אדום קטן */
+.notif-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    background: #ef4444;
+    color: #fff;
+
+    font-size: 11px;
+    padding: 2px 6px;
+
+    border-radius: 999px;
+    font-weight: 700;
+
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+    pointer-events: none;
+}
+
+/* Badge בגרסת מובייל — ממורכז קצת אחרת */
+.mobile-badge {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+}
