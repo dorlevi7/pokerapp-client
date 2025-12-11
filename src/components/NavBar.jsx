@@ -62,7 +62,7 @@ function NavBar() {
         {/* ⭐ Notifications with Badge */}
         <div className="notif-wrapper">
           <button
-            className={`nav-btn notifications-link ${
+            className={`nav-btn ${
               location.pathname === "/notifications" ? "active" : ""
             }`}
             onClick={() => navigate("/notifications")}
@@ -109,7 +109,7 @@ function NavBar() {
         </button>
 
         <button
-          className={`mobile-item notifications-link ${
+          className={`mobile-item ${
             location.pathname === "/notifications" ? "active" : ""
           }`}
           onClick={() => {
