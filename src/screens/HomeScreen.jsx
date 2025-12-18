@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/HomeScreen.css";
 import NavBar from "../components/NavBar";
+import FloatingDecorations from "../components/FloatingDecorations";
 import { toast } from "react-hot-toast";
 
 function HomeScreen() {
@@ -35,125 +36,9 @@ function HomeScreen() {
       <NavBar />
 
       {/* =======================================
-          🎴 FLOATING 3D CARDS
+          🌟 FLOATING CARDS + CHIPS COMPONENT
       ========================================= */}
-
-{/* CARD 1 */}
-<div className="card-wrapper card1-wrapper">
-  <div className="card-inner">
-    <div
-      className="card-face card-front"
-      style={{ backgroundImage: "url('/card1.png')" }}
-    ></div>
-    <div
-      className="card-face card-back"
-      style={{ backgroundImage: "url('/card_back.png')" }}
-    ></div>
-  </div>
-</div>
-
-{/* CARD 2 */}
-<div className="card-wrapper card2-wrapper">
-  <div className="card-inner">
-    <div
-      className="card-face card-front"
-      style={{ backgroundImage: "url('/card2.png')" }}
-    ></div>
-    <div
-      className="card-face card-back"
-      style={{ backgroundImage: "url('/card_back.png')" }}
-    ></div>
-  </div>
-</div>
-
-{/* CARD 3 */}
-<div className="card-wrapper card3-wrapper">
-  <div className="card-inner">
-    <div
-      className="card-face card-front"
-      style={{ backgroundImage: "url('/card.png')" }}
-    ></div>
-    <div
-      className="card-face card-back"
-      style={{ backgroundImage: "url('/card_back.png')" }}
-    ></div>
-  </div>
-</div>
-
-{/* CARD 4 */}
-<div className="card-wrapper card4-wrapper">
-  <div className="card-inner">
-    <div
-      className="card-face card-front"
-      style={{ backgroundImage: "url('/card3.png')" }}
-    ></div>
-    <div
-      className="card-face card-back"
-      style={{ backgroundImage: "url('/card_back.png')" }}
-    ></div>
-  </div>
-</div>
-
-
-      {/* =======================================
-          🎲 FLOATING 3D DOUBLE-SIDED CHIPS
-      ========================================= */}
-
-      {/* MAIN CHIP */}
-      <div className="chip-wrapper">
-        <div className="chip-inner">
-          <div
-            className="chip-face chip-front"
-            style={{ backgroundImage: "url('/chip.png')" }}
-          ></div>
-          <div
-            className="chip-face chip-back"
-            style={{ backgroundImage: "url('/chip.png')" }}
-          ></div>
-        </div>
-      </div>
-
-      {/* CHIP 1 */}
-      <div className="chip-wrapper chip1">
-        <div className="chip-inner">
-          <div
-            className="chip-face chip-front"
-            style={{ backgroundImage: "url('/chip1.png')" }}
-          ></div>
-          <div
-            className="chip-face chip-back"
-            style={{ backgroundImage: "url('/chip1.png')" }}
-          ></div>
-        </div>
-      </div>
-
-      {/* CHIP 2 */}
-      <div className="chip-wrapper chip2">
-        <div className="chip-inner">
-          <div
-            className="chip-face chip-front"
-            style={{ backgroundImage: "url('/chip2.png')" }}
-          ></div>
-          <div
-            className="chip-face chip-back"
-            style={{ backgroundImage: "url('/chip2.png')" }}
-          ></div>
-        </div>
-      </div>
-
-      {/* CHIP 3 */}
-      <div className="chip-wrapper chip3">
-        <div className="chip-inner">
-          <div
-            className="chip-face chip-front"
-            style={{ backgroundImage: "url('/chip3.png')" }}
-          ></div>
-          <div
-            className="chip-face chip-back"
-            style={{ backgroundImage: "url('/chip3.png')" }}
-          ></div>
-        </div>
-      </div>
+      <FloatingDecorations />
 
       {/* =======================================
           🏠 MAIN HOME CARD
