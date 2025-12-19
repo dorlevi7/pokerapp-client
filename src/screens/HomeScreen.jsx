@@ -10,9 +10,6 @@ function HomeScreen() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
-  const animations = ["float", "sway", "bounce", "spin"];
-  const [currentAnim, setCurrentAnim] = useState(0);
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -22,13 +19,6 @@ function HomeScreen() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentAnim((prev) => (prev + 1) % animations.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   if (!user) return null;
 
   return (
@@ -37,9 +27,9 @@ function HomeScreen() {
 
       {/* =======================================
           🌟 FLOATING CARDS + CHIPS COMPONENT
-      ========================================= 
+      ========================================= */}
       <FloatingDecorations />
-      */}
+      
 
       {/* =======================================
           🏠 MAIN HOME CARD
