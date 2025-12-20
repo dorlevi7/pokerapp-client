@@ -14,6 +14,7 @@ import GroupScreen from "./screens/GroupScreen";
 import NotificationsScreen from "./screens/NotificationsScreen"; // ⭐ NEW
 
 import GameSettingsScreen from "./screens/GameSettingsScreen"; 
+import GameScreen from "./screens/GameScreen";   // ⭐ NEW IMPORT
 
 function App() {
   return (
@@ -50,6 +51,8 @@ function App() {
           <Route path="/notifications" element={<NotificationsScreen />} />
 
           <Route path="/group/:groupId/settings" element={<GameSettingsScreen />} />
+
+          <Route path="/group/:groupId/game/:gameId" element={<GameScreen />} />
 
         </Routes>
       </div>

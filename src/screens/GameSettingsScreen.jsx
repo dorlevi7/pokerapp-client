@@ -101,9 +101,71 @@ function GameSettingsScreen() {
     );
   }
 
-  function startGame() {
-    navigate(`/group/${groupId}/game`);
+async function startGame() {
+  try {
+    // ✔ Read the stored user object (like in ProfileScreen)
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    const createdBy = storedUser?.id;
+
+    if (!createdBy) {
+      alert("User not logged in!");
+      return;
+    }
+
+    const payload = {
+      groupId,
+      createdBy,
+      playerIds: selectedPlayers,
+
+      settings: {
+        gameType,
+        currency,
+        buyIn: gameType === "cash" ? buyIn : tournamentBuyIn,
+        cashSB,
+        cashBB,
+        allowRebuy,
+        rebuyType,
+        minRebuy,
+        maxRebuy,
+        rebuyPercent,
+        maxRebuysAllowed,
+        startingChips,
+        levelDuration,
+        startingSB,
+        startingBB,
+        enableLateReg,
+        lateRegType,
+        lateRegMinutes,
+        lateRegLevel,
+        allowStraddle,
+        allowRunItTwice,
+        notes
+      }
+    };
+
+    const res = await fetch(`${API_BASE_URL}/api/games/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert("Error creating game: " + data.error);
+      return;
+    }
+
+    const gameId = data.data.gameId;
+
+    navigate(`/group/${groupId}/game/${gameId}`);
+
+  } catch (err) {
+    console.error("Error starting game:", err);
+    alert("Server error while creating game");
   }
+}
 
   /* ============================================================
      📌 JSX RETURN

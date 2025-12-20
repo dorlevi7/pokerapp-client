@@ -33,7 +33,6 @@ function MyGroups() {
                 });
 
                 const data = await response.json();
-                console.log("📥 Groups response:", data);
 
                 if (!response.ok || !data.success) {
                     toast.error(data.error || "Failed to load groups.");
