@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/GameScreen.css";
 import { toast } from "react-hot-toast"; // ⭐ NEW
+import Loader from "../components/Loader";
 
 function GameScreen() {
   const { groupId, gameId } = useParams();
@@ -197,7 +198,7 @@ function GameScreen() {
     return (
       <>
         <NavBar />
-        <div className="game-screen-loading">Loading game...</div>
+        <Loader />
       </>
     );
   }
