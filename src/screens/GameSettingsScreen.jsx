@@ -257,16 +257,16 @@ function GameSettingsScreen() {
                 </div>
 
                 {/* ---------------- Late Registration ---------------- */}
-<div className="player-item late-reg-row">
-  <label className="checkbox-row">
-    <input
-      type="checkbox"
-      checked={enableLateReg}
-      onChange={() => setEnableLateReg(prev => !prev)}
-    />
-    Allow Late Registration
-  </label>
-</div>
+                <div className="player-item late-reg-row">
+                <label className="checkbox-row">
+                    <input
+                    type="checkbox"
+                    checked={enableLateReg}
+                    onChange={() => setEnableLateReg(prev => !prev)}
+                    />
+                    Allow Late Registration
+                </label>
+                </div>
 
 
                 {enableLateReg && (
