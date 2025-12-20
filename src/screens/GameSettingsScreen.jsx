@@ -13,12 +13,16 @@ function GameSettingsScreen() {
   // ⭐ Game Type
   const [gameType, setGameType] = useState("cash");
 
-  // ⭐ Currency (NEW)
+  // ⭐ Currency
   const [currency, setCurrency] = useState("₪");
 
   // ⭐ Buy-in values
   const [buyIn, setBuyIn] = useState(20);
   const [tournamentBuyIn, setTournamentBuyIn] = useState(50);
+
+  // ⭐ Cash Blinds (NEW)
+  const [cashSB, setCashSB] = useState(1);
+  const [cashBB, setCashBB] = useState(2);
 
   // ⭐ Cash Game: Rebuy settings
   const [allowRebuy, setAllowRebuy] = useState(true);
@@ -36,7 +40,7 @@ function GameSettingsScreen() {
   const [startingSB, setStartingSB] = useState(100);
   const [startingBB, setStartingBB] = useState(200);
 
-  // ⭐ Table Rules (Cash only)
+  // ⭐ Table Rules
   const [allowStraddle, setAllowStraddle] = useState(false);
   const [allowRunItTwice, setAllowRunItTwice] = useState(false);
 
@@ -134,7 +138,7 @@ function GameSettingsScreen() {
             </div>
           </div>
 
-          {/* ---------------- CURRENCY (NEW) ---------------- */}
+          {/* ---------------- CURRENCY ---------------- */}
           <h2 className="subtitle">Currency</h2>
 
           <div className="rebuy-container">
@@ -155,6 +159,33 @@ function GameSettingsScreen() {
           {/* ---------------- CASH GAME ---------------- */}
           {gameType === "cash" && (
             <>
+              {/* ⭐ NEW: Cash Blinds */}
+              <h2 className="subtitle">Cash Blinds</h2>
+
+              <div className="rebuy-container">
+                <div className="field">
+                  <label className="field-label">Small Blind ({currency})</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={cashSB}
+                    min="1"
+                    onChange={(e) => setCashSB(Number(e.target.value))}
+                  />
+                </div>
+
+                <div className="field">
+                  <label className="field-label">Big Blind ({currency})</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={cashBB}
+                    min="1"
+                    onChange={(e) => setCashBB(Number(e.target.value))}
+                  />
+                </div>
+              </div>
+
               <h2 className="subtitle">Rebuy Settings</h2>
 
               <div className="rebuy-container">
@@ -180,14 +211,18 @@ function GameSettingsScreen() {
                         onChange={(e) => setRebuyType(e.target.value)}
                       >
                         <option value="range">Fixed Range (Min–Max)</option>
-                        <option value="percentage">Percentage of Avg Stack</option>
+                        <option value="percentage">
+                          Percentage of Avg Stack
+                        </option>
                       </select>
                     </div>
 
                     {rebuyType === "range" && (
                       <>
                         <div className="field">
-                          <label className="field-label">Min Rebuy ({currency})</label>
+                          <label className="field-label">
+                            Min Rebuy ({currency})
+                          </label>
                           <input
                             type="number"
                             className="input"
@@ -198,7 +233,9 @@ function GameSettingsScreen() {
                         </div>
 
                         <div className="field">
-                          <label className="field-label">Max Rebuy ({currency})</label>
+                          <label className="field-label">
+                            Max Rebuy ({currency})
+                          </label>
                           <input
                             type="number"
                             className="input"
@@ -234,7 +271,9 @@ function GameSettingsScreen() {
                           value={rebuyPercent}
                           min="10"
                           max="300"
-                          onChange={(e) => setRebuyPercent(Number(e.target.value))}
+                          onChange={(e) =>
+                            setRebuyPercent(Number(e.target.value))
+                          }
                         />
                       </div>
                     )}
@@ -339,7 +378,9 @@ function GameSettingsScreen() {
 
                     {lateRegType === "level" && (
                       <div className="field">
-                        <label className="field-label">Late Reg Until Level</label>
+                        <label className="field-label">
+                          Late Reg Until Level
+                        </label>
                         <input
                           type="number"
                           className="input"
@@ -373,7 +414,7 @@ function GameSettingsScreen() {
             />
           </div>
 
-          {/* ---------------- TABLE RULES (CASH ONLY) ---------------- */}
+          {/* ---------------- TABLE RULES ---------------- */}
           {gameType === "cash" && (
             <>
               <h2 className="subtitle">Table Rules</h2>
@@ -426,7 +467,6 @@ function GameSettingsScreen() {
           >
             ⬅ Back
           </button>
-
         </div>
       </div>
     </>
