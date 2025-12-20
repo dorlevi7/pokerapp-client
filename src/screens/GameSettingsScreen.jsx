@@ -14,8 +14,8 @@ function GameSettingsScreen() {
   const [gameType, setGameType] = useState("cash");
 
   // ⭐ Buy-in values for both modes
-  const [buyIn, setBuyIn] = useState(20);               // cash
-  const [tournamentBuyIn, setTournamentBuyIn] = useState(50); // tournament
+  const [buyIn, setBuyIn] = useState(20);               
+  const [tournamentBuyIn, setTournamentBuyIn] = useState(50);
 
   // ⭐ ריבאיים — Cash Game
   const [allowRebuy, setAllowRebuy] = useState(true);
@@ -29,6 +29,16 @@ function GameSettingsScreen() {
   const [levelDuration, setLevelDuration] = useState(15);
   const [startingSB, setStartingSB] = useState(100);
   const [startingBB, setStartingBB] = useState(200);
+
+  // ⭐ Table Rules
+  const [allowStraddle, setAllowStraddle] = useState(false);
+  const [allowRunItTwice, setAllowRunItTwice] = useState(false);
+
+  // ⭐ Late Registration (NEW)
+  const [enableLateReg, setEnableLateReg] = useState(false);
+  const [lateRegType, setLateRegType] = useState("minutes"); // minutes | level
+  const [lateRegMinutes, setLateRegMinutes] = useState(20);
+  const [lateRegLevel, setLateRegLevel] = useState(2);
 
   const [notes, setNotes] = useState("");
 
@@ -137,6 +147,7 @@ function GameSettingsScreen() {
 
                 {allowRebuy && (
                   <div className="rebuy-inner">
+
                     <div className="field">
                       <label className="field-label">Rebuy Type</label>
                       <select
@@ -244,6 +255,62 @@ function GameSettingsScreen() {
                     />
                   </div>
                 </div>
+
+                {/* ---------------- Late Registration ---------------- */}
+<div className="player-item late-reg-row">
+  <label className="checkbox-row">
+    <input
+      type="checkbox"
+      checked={enableLateReg}
+      onChange={() => setEnableLateReg(prev => !prev)}
+    />
+    Allow Late Registration
+  </label>
+</div>
+
+
+                {enableLateReg && (
+                  <>
+                    <div className="field">
+                      <label className="field-label">Late Registration Type</label>
+                      <select
+                        className="input"
+                        value={lateRegType}
+                        onChange={(e) => setLateRegType(e.target.value)}
+                      >
+                        <option value="minutes">By Minutes</option>
+                        <option value="level">By Blind Level</option>
+                      </select>
+                    </div>
+
+                    {lateRegType === "minutes" && (
+                      <div className="field">
+                        <label className="field-label">Late Reg Duration (minutes)</label>
+                        <input
+                          type="number"
+                          className="input"
+                          value={lateRegMinutes}
+                          min="1"
+                          onChange={(e) => setLateRegMinutes(Number(e.target.value))}
+                        />
+                      </div>
+                    )}
+
+                    {lateRegType === "level" && (
+                      <div className="field">
+                        <label className="field-label">Late Reg Until Level</label>
+                        <input
+                          type="number"
+                          className="input"
+                          value={lateRegLevel}
+                          min="1"
+                          onChange={(e) => setLateRegLevel(Number(e.target.value))}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+
               </div>
             </>
           )}
@@ -262,6 +329,35 @@ function GameSettingsScreen() {
                 else setTournamentBuyIn(val);
               }}
             />
+          </div>
+
+          {/* ------------------------ TABLE RULES ------------------------ */}
+          <h2 className="subtitle">Table Rules</h2>
+
+          <div className="rebuy-container">
+
+            <div className="player-item">
+              <label className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={allowStraddle}
+                  onChange={() => setAllowStraddle(prev => !prev)}
+                />
+                Allow Straddle
+              </label>
+            </div>
+
+            <div className="player-item">
+              <label className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={allowRunItTwice}
+                  onChange={() => setAllowRunItTwice(prev => !prev)}
+                />
+                Allow Run It Twice
+              </label>
+            </div>
+
           </div>
 
           {/* ------------------------ Notes ------------------------ */}
