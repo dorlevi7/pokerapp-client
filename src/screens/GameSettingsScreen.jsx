@@ -13,6 +13,9 @@ function GameSettingsScreen() {
   // ⭐ Game Type
   const [gameType, setGameType] = useState("cash");
 
+  // ⭐ Currency (NEW)
+  const [currency, setCurrency] = useState("₪");
+
   // ⭐ Buy-in values
   const [buyIn, setBuyIn] = useState(20);
   const [tournamentBuyIn, setTournamentBuyIn] = useState(50);
@@ -24,7 +27,7 @@ function GameSettingsScreen() {
   const [maxRebuy, setMaxRebuy] = useState(25);
   const [rebuyPercent, setRebuyPercent] = useState(100);
 
-  // ⭐ NEW — Limit maximum rebuy count
+  // ⭐ Max rebuys allowed
   const [maxRebuysAllowed, setMaxRebuysAllowed] = useState(5);
 
   // ⭐ Tournament settings
@@ -131,6 +134,24 @@ function GameSettingsScreen() {
             </div>
           </div>
 
+          {/* ---------------- CURRENCY (NEW) ---------------- */}
+          <h2 className="subtitle">Currency</h2>
+
+          <div className="rebuy-container">
+            <div className="field">
+              <label className="field-label">Select Currency</label>
+              <select
+                className="input"
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+              >
+                <option value="₪">₪ – NIS</option>
+                <option value="$">$ – Dollar</option>
+                <option value="€">€ – Euro</option>
+              </select>
+            </div>
+          </div>
+
           {/* ---------------- CASH GAME ---------------- */}
           {gameType === "cash" && (
             <>
@@ -166,7 +187,7 @@ function GameSettingsScreen() {
                     {rebuyType === "range" && (
                       <>
                         <div className="field">
-                          <label className="field-label">Min Rebuy (₪)</label>
+                          <label className="field-label">Min Rebuy ({currency})</label>
                           <input
                             type="number"
                             className="input"
@@ -177,7 +198,7 @@ function GameSettingsScreen() {
                         </div>
 
                         <div className="field">
-                          <label className="field-label">Max Rebuy (₪)</label>
+                          <label className="field-label">Max Rebuy ({currency})</label>
                           <input
                             type="number"
                             className="input"
@@ -187,7 +208,6 @@ function GameSettingsScreen() {
                           />
                         </div>
 
-                        {/* ⭐ NEW — Max number of rebuys allowed */}
                         <div className="field">
                           <label className="field-label">Max Rebuys Allowed</label>
                           <input
@@ -205,7 +225,9 @@ function GameSettingsScreen() {
 
                     {rebuyType === "percentage" && (
                       <div className="field">
-                        <label className="field-label">Rebuy % of Avg Stack</label>
+                        <label className="field-label">
+                          Rebuy % of Avg Stack
+                        </label>
                         <input
                           type="number"
                           className="input"
@@ -300,7 +322,9 @@ function GameSettingsScreen() {
 
                     {lateRegType === "minutes" && (
                       <div className="field">
-                        <label className="field-label">Late Reg Duration (minutes)</label>
+                        <label className="field-label">
+                          Late Reg Duration (minutes)
+                        </label>
                         <input
                           type="number"
                           className="input"
@@ -335,7 +359,7 @@ function GameSettingsScreen() {
 
           {/* ---------------- BUY-IN ---------------- */}
           <div className="field">
-            <label className="field-label">Buy-in Amount (₪)</label>
+            <label className="field-label">Buy-in Amount ({currency})</label>
             <input
               type="number"
               className="input"
@@ -355,7 +379,6 @@ function GameSettingsScreen() {
               <h2 className="subtitle">Table Rules</h2>
 
               <div className="rebuy-container">
-
                 <div className="player-item">
                   <label className="checkbox-row">
                     <input
@@ -377,7 +400,6 @@ function GameSettingsScreen() {
                     Allow Run It Twice
                   </label>
                 </div>
-
               </div>
             </>
           )}
