@@ -547,7 +547,7 @@ async function startGame() {
               BUTTONS
               ====================================================== */}
           <button className="btn-primary action-btn" onClick={startGame}>
-            Start Game
+            Create Game
           </button>
 
           <button

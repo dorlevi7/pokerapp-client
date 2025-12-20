@@ -13,6 +13,33 @@ function GameScreen() {
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
+  /* ============================================================
+     UPDATE GAME STATUS
+  ============================================================ */
+  async function updateStatus(newStatus) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/games/${gameId}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setGame((prev) => ({ ...prev, status: newStatus }));
+      } else {
+        alert("Error updating status: " + data.error);
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Server error while updating status");
+    }
+  }
+
+  /* ============================================================
+     LOAD GAME DATA
+  ============================================================ */
   useEffect(() => {
     async function loadGame() {
       try {
@@ -49,6 +76,30 @@ function GameScreen() {
       <div className="game-screen-container">
         <div className="game-card">
           <h1 className="title">GAME #{gameId}</h1>
+
+          {/* STATUS BADGE */}
+          <div className={`status-badge status-${game.status}`}>
+            {game.status.toUpperCase()}
+          </div>
+
+          {/* START / END BUTTONS */}
+          {game.status === "pending" && (
+            <button
+              className="btn-primary start-btn"
+              onClick={() => updateStatus("active")}
+            >
+              Start Game
+            </button>
+          )}
+
+          {game.status === "active" && (
+            <button
+              className="btn-secondary end-btn"
+              onClick={() => updateStatus("finished")}
+            >
+              End Game
+            </button>
+          )}
 
           <h2 className="section-title">Players</h2>
           <ul className="players-list">
