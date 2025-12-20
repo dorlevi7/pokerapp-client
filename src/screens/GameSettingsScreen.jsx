@@ -140,7 +140,6 @@ function GameSettingsScreen() {
               GAME TYPE
               ====================================================== */}
           <AccordionSection title="Game Type">
-            <div className="rebuy-container">
               <div className="player-item">
                 <label className="checkbox-row">
                   <input
@@ -166,7 +165,6 @@ function GameSettingsScreen() {
                   Tournament
                 </label>
               </div>
-            </div>
           </AccordionSection>
 
           {/* ======================================================
