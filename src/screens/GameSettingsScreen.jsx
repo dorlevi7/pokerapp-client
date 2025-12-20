@@ -3,6 +3,27 @@ import { useParams, useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/GameSettingsScreen.css";
 
+/* ============================================================
+   📌 Accordion Component — clean, minimal, professional
+   ============================================================ */
+function AccordionSection({ title, children }) {
+  const [open, setOpen] = useState(false); // ✔ ALL CLOSED by default
+
+  return (
+    <div className="accordion-section">
+      <button className="accordion-header" onClick={() => setOpen(!open)}>
+        <span>{title}</span>
+        <span className="accordion-arrow">{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && <div className="accordion-body">{children}</div>}
+    </div>
+  );
+}
+
+/* ============================================================
+   📌 MAIN SCREEN
+   ============================================================ */
 function GameSettingsScreen() {
   const { groupId } = useParams();
   const navigate = useNavigate();
@@ -20,18 +41,16 @@ function GameSettingsScreen() {
   const [buyIn, setBuyIn] = useState(20);
   const [tournamentBuyIn, setTournamentBuyIn] = useState(50);
 
-  // ⭐ Cash Blinds (NEW)
+  // ⭐ Cash Blinds
   const [cashSB, setCashSB] = useState(1);
   const [cashBB, setCashBB] = useState(2);
 
-  // ⭐ Cash Game: Rebuy settings
+  // ⭐ Rebuy settings
   const [allowRebuy, setAllowRebuy] = useState(true);
   const [rebuyType, setRebuyType] = useState("range");
   const [minRebuy, setMinRebuy] = useState(10);
   const [maxRebuy, setMaxRebuy] = useState(25);
   const [rebuyPercent, setRebuyPercent] = useState(100);
-
-  // ⭐ Max rebuys allowed
   const [maxRebuysAllowed, setMaxRebuysAllowed] = useState(5);
 
   // ⭐ Tournament settings
@@ -57,6 +76,9 @@ function GameSettingsScreen() {
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
+  /* ============================================================
+     📌 Fetch Group Members
+     ============================================================ */
   useEffect(() => {
     const fetchMembers = async () => {
       const res = await fetch(`${API_BASE_URL}/api/groups/${groupId}/members`);
@@ -73,7 +95,9 @@ function GameSettingsScreen() {
 
   function togglePlayer(id) {
     setSelectedPlayers((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((p) => p !== id)
+        : [...prev, id]
     );
   }
 
@@ -81,6 +105,9 @@ function GameSettingsScreen() {
     navigate(`/group/${groupId}/game`);
   }
 
+  /* ============================================================
+     📌 JSX RETURN
+     ============================================================ */
   return (
     <>
       <NavBar />
@@ -89,59 +116,63 @@ function GameSettingsScreen() {
         <div className="card screen-card">
           <h1 className="title">GAME SETTINGS</h1>
 
-          {/* ---------------- Players ---------------- */}
-          <h2 className="subtitle">Players</h2>
+          {/* ======================================================
+              PLAYERS
+              ====================================================== */}
+          <AccordionSection title="Players">
+            <ul className="player-list">
+              {members.map((m) => (
+                <li key={m.id} className="player-item">
+                  <label className="checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={selectedPlayers.includes(m.id)}
+                      onChange={() => togglePlayer(m.id)}
+                    />
+                    {m.username}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </AccordionSection>
 
-          <ul className="player-list">
-            {members.map((m) => (
-              <li key={m.id} className="player-item">
+          {/* ======================================================
+              GAME TYPE
+              ====================================================== */}
+          <AccordionSection title="Game Type">
+            <div className="rebuy-container">
+              <div className="player-item">
                 <label className="checkbox-row">
                   <input
-                    type="checkbox"
-                    checked={selectedPlayers.includes(m.id)}
-                    onChange={() => togglePlayer(m.id)}
+                    type="radio"
+                    name="gameType"
+                    value="cash"
+                    checked={gameType === "cash"}
+                    onChange={() => setGameType("cash")}
                   />
-                  {m.username}
+                  Cash Game
                 </label>
-              </li>
-            ))}
-          </ul>
+              </div>
 
-          {/* ---------------- Game Type ---------------- */}
-          <h2 className="subtitle">Game Type</h2>
-
-          <div className="rebuy-container">
-            <div className="player-item">
-              <label className="checkbox-row">
-                <input
-                  type="radio"
-                  name="gameType"
-                  value="cash"
-                  checked={gameType === "cash"}
-                  onChange={() => setGameType("cash")}
-                />
-                Cash Game
-              </label>
+              <div className="player-item">
+                <label className="checkbox-row">
+                  <input
+                    type="radio"
+                    name="gameType"
+                    value="tournament"
+                    checked={gameType === "tournament"}
+                    onChange={() => setGameType("tournament")}
+                  />
+                  Tournament
+                </label>
+              </div>
             </div>
+          </AccordionSection>
 
-            <div className="player-item">
-              <label className="checkbox-row">
-                <input
-                  type="radio"
-                  name="gameType"
-                  value="tournament"
-                  checked={gameType === "tournament"}
-                  onChange={() => setGameType("tournament")}
-                />
-                Tournament
-              </label>
-            </div>
-          </div>
-
-          {/* ---------------- CURRENCY ---------------- */}
-          <h2 className="subtitle">Currency</h2>
-
-          <div className="rebuy-container">
+          {/* ======================================================
+              CURRENCY
+              ====================================================== */}
+          <AccordionSection title="Currency">
             <div className="field">
               <label className="field-label">Select Currency</label>
               <select
@@ -154,309 +185,307 @@ function GameSettingsScreen() {
                 <option value="€">€ – Euro</option>
               </select>
             </div>
-          </div>
+          </AccordionSection>
 
-          {/* ---------------- CASH GAME ---------------- */}
+          {/* ======================================================
+              CASH GAME SETTINGS
+              ====================================================== */}
           {gameType === "cash" && (
-            <>
-              {/* ⭐ NEW: Cash Blinds */}
-              <h2 className="subtitle">Cash Blinds</h2>
-
-              <div className="rebuy-container">
-                <div className="field">
-                  <label className="field-label">Small Blind ({currency})</label>
-                  <input
-                    type="number"
-                    className="input"
-                    value={cashSB}
-                    min="1"
-                    onChange={(e) => setCashSB(Number(e.target.value))}
-                  />
-                </div>
-
-                <div className="field">
-                  <label className="field-label">Big Blind ({currency})</label>
-                  <input
-                    type="number"
-                    className="input"
-                    value={cashBB}
-                    min="1"
-                    onChange={(e) => setCashBB(Number(e.target.value))}
-                  />
-                </div>
+            <AccordionSection title="Cash Game Settings">
+              {/* Blinds */}
+              <div className="field">
+                <label className="field-label">Small Blind ({currency})</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={cashSB}
+                  min="1"
+                  onChange={(e) => setCashSB(Number(e.target.value))}
+                />
               </div>
 
-              <h2 className="subtitle">Rebuy Settings</h2>
+              <div className="field">
+                <label className="field-label">Big Blind ({currency})</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={cashBB}
+                  min="1"
+                  onChange={(e) => setCashBB(Number(e.target.value))}
+                />
+              </div>
 
-              <div className="rebuy-container">
-                <div className="player-item">
-                  <label className="checkbox-row">
-                    <input
-                      type="checkbox"
-                      checked={allowRebuy}
-                      onChange={() => setAllowRebuy((prev) => !prev)}
-                    />
-                    Allow Rebuy?
-                  </label>
-                </div>
+              {/* Rebuy Settings */}
+              <h3 className="subtitle">Rebuy Settings</h3>
 
-                {allowRebuy && (
-                  <div className="rebuy-inner">
+              <div className="player-item">
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={allowRebuy}
+                    onChange={() => setAllowRebuy(!allowRebuy)}
+                  />
+                  Allow Rebuy?
+                </label>
+              </div>
 
-                    <div className="field">
-                      <label className="field-label">Rebuy Type</label>
-                      <select
-                        className="input"
-                        value={rebuyType}
-                        onChange={(e) => setRebuyType(e.target.value)}
-                      >
-                        <option value="range">Fixed Range (Min–Max)</option>
-                        <option value="percentage">
-                          Percentage of Avg Stack
-                        </option>
-                      </select>
-                    </div>
+              {allowRebuy && (
+                <>
+                  <div className="field">
+                    <label className="field-label">Rebuy Type</label>
+                    <select
+                      className="input"
+                      value={rebuyType}
+                      onChange={(e) => setRebuyType(e.target.value)}
+                    >
+                      <option value="range">Fixed Range</option>
+                      <option value="percentage">
+                        Percentage of Avg Stack
+                      </option>
+                    </select>
+                  </div>
 
-                    {rebuyType === "range" && (
-                      <>
-                        <div className="field">
-                          <label className="field-label">
-                            Min Rebuy ({currency})
-                          </label>
-                          <input
-                            type="number"
-                            className="input"
-                            value={minRebuy}
-                            min="0"
-                            onChange={(e) => setMinRebuy(Number(e.target.value))}
-                          />
-                        </div>
-
-                        <div className="field">
-                          <label className="field-label">
-                            Max Rebuy ({currency})
-                          </label>
-                          <input
-                            type="number"
-                            className="input"
-                            value={maxRebuy}
-                            min={minRebuy}
-                            onChange={(e) => setMaxRebuy(Number(e.target.value))}
-                          />
-                        </div>
-
-                        <div className="field">
-                          <label className="field-label">Max Rebuys Allowed</label>
-                          <input
-                            type="number"
-                            className="input"
-                            min="0"
-                            value={maxRebuysAllowed}
-                            onChange={(e) =>
-                              setMaxRebuysAllowed(Number(e.target.value))
-                            }
-                          />
-                        </div>
-                      </>
-                    )}
-
-                    {rebuyType === "percentage" && (
+                  {rebuyType === "range" && (
+                    <>
                       <div className="field">
                         <label className="field-label">
-                          Rebuy % of Avg Stack
+                          Min Rebuy ({currency})
                         </label>
                         <input
                           type="number"
                           className="input"
-                          value={rebuyPercent}
-                          min="10"
-                          max="300"
+                          value={minRebuy}
                           onChange={(e) =>
-                            setRebuyPercent(Number(e.target.value))
+                            setMinRebuy(Number(e.target.value))
                           }
                         />
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </>
+
+                      <div className="field">
+                        <label className="field-label">
+                          Max Rebuy ({currency})
+                        </label>
+                        <input
+                          type="number"
+                          className="input"
+                          value={maxRebuy}
+                          onChange={(e) =>
+                            setMaxRebuy(Number(e.target.value))
+                          }
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label className="field-label">Max Rebuys Allowed</label>
+                        <input
+                          type="number"
+                          className="input"
+                          value={maxRebuysAllowed}
+                          onChange={(e) =>
+                            setMaxRebuysAllowed(Number(e.target.value))
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {rebuyType === "percentage" && (
+                    <div className="field">
+                      <label className="field-label">Rebuy %</label>
+                      <input
+                        type="number"
+                        className="input"
+                        value={rebuyPercent}
+                        min="10"
+                        max="300"
+                        onChange={(e) =>
+                          setRebuyPercent(Number(e.target.value))
+                        }
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+            </AccordionSection>
           )}
 
-          {/* ---------------- TOURNAMENT ---------------- */}
+          {/* ======================================================
+              TOURNAMENT SETTINGS
+              ====================================================== */}
           {gameType === "tournament" && (
-            <>
-              <h2 className="subtitle">Tournament Settings</h2>
+            <AccordionSection title="Tournament Settings">
+              <div className="field">
+                <label className="field-label">Starting Chips</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={startingChips}
+                  onChange={(e) =>
+                    setStartingChips(Number(e.target.value))
+                  }
+                />
+              </div>
 
-              <div className="rebuy-container">
-                <div className="field">
-                  <label className="field-label">Starting Chips</label>
+              <div className="field">
+                <label className="field-label">Level Duration (minutes)</label>
+                <input
+                  type="number"
+                  className="input"
+                  value={levelDuration}
+                  onChange={(e) =>
+                    setLevelDuration(Number(e.target.value))
+                  }
+                />
+              </div>
+
+              <div className="field">
+                <label className="field-label">Starting Blinds</label>
+                <div style={{ display: "flex", gap: "12px" }}>
                   <input
                     type="number"
                     className="input"
-                    value={startingChips}
-                    min="1000"
-                    onChange={(e) => setStartingChips(Number(e.target.value))}
+                    value={startingSB}
+                    onChange={(e) => setStartingSB(Number(e.target.value))}
+                    placeholder="SB"
                   />
-                </div>
-
-                <div className="field">
-                  <label className="field-label">Level Duration (minutes)</label>
                   <input
                     type="number"
                     className="input"
-                    value={levelDuration}
-                    min="5"
-                    onChange={(e) => setLevelDuration(Number(e.target.value))}
+                    value={startingBB}
+                    onChange={(e) => setStartingBB(Number(e.target.value))}
+                    placeholder="BB"
                   />
                 </div>
+              </div>
 
-                <div className="field">
-                  <label className="field-label">Starting Blinds (SB / BB)</label>
-                  <div style={{ display: "flex", gap: "12px" }}>
-                    <input
-                      type="number"
+              {/* Late Registration */}
+              <h3 className="subtitle">Late Registration</h3>
+
+              <div className="player-item">
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={enableLateReg}
+                    onChange={() => setEnableLateReg(!enableLateReg)}
+                  />
+                  Allow Late Registration
+                </label>
+              </div>
+
+              {enableLateReg && (
+                <>
+                  <div className="field">
+                    <label className="field-label">Late Reg Type</label>
+                    <select
                       className="input"
-                      value={startingSB}
-                      min="1"
-                      onChange={(e) => setStartingSB(Number(e.target.value))}
-                      placeholder="SB"
-                    />
-                    <input
-                      type="number"
-                      className="input"
-                      value={startingBB}
-                      min="1"
-                      onChange={(e) => setStartingBB(Number(e.target.value))}
-                      placeholder="BB"
-                    />
+                      value={lateRegType}
+                      onChange={(e) => setLateRegType(e.target.value)}
+                    >
+                      <option value="minutes">By Minutes</option>
+                      <option value="level">By Blind Level</option>
+                    </select>
                   </div>
-                </div>
 
-                {/* --------------- Late Registration --------------- */}
-                <div className="player-item late-reg-row">
-                  <label className="checkbox-row">
-                    <input
-                      type="checkbox"
-                      checked={enableLateReg}
-                      onChange={() => setEnableLateReg((prev) => !prev)}
-                    />
-                    Allow Late Registration
-                  </label>
-                </div>
-
-                {enableLateReg && (
-                  <>
+                  {lateRegType === "minutes" && (
                     <div className="field">
-                      <label className="field-label">Late Registration Type</label>
-                      <select
+                      <label className="field-label">Duration (minutes)</label>
+                      <input
+                        type="number"
                         className="input"
-                        value={lateRegType}
-                        onChange={(e) => setLateRegType(e.target.value)}
-                      >
-                        <option value="minutes">By Minutes</option>
-                        <option value="level">By Blind Level</option>
-                      </select>
+                        value={lateRegMinutes}
+                        onChange={(e) =>
+                          setLateRegMinutes(Number(e.target.value))
+                        }
+                      />
                     </div>
+                  )}
 
-                    {lateRegType === "minutes" && (
-                      <div className="field">
-                        <label className="field-label">
-                          Late Reg Duration (minutes)
-                        </label>
-                        <input
-                          type="number"
-                          className="input"
-                          value={lateRegMinutes}
-                          min="1"
-                          onChange={(e) =>
-                            setLateRegMinutes(Number(e.target.value))
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {lateRegType === "level" && (
-                      <div className="field">
-                        <label className="field-label">
-                          Late Reg Until Level
-                        </label>
-                        <input
-                          type="number"
-                          className="input"
-                          value={lateRegLevel}
-                          min="1"
-                          onChange={(e) =>
-                            setLateRegLevel(Number(e.target.value))
-                          }
-                        />
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </>
+                  {lateRegType === "level" && (
+                    <div className="field">
+                      <label className="field-label">Until Level</label>
+                      <input
+                        type="number"
+                        className="input"
+                        value={lateRegLevel}
+                        onChange={(e) =>
+                          setLateRegLevel(Number(e.target.value))
+                        }
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+            </AccordionSection>
           )}
 
-          {/* ---------------- BUY-IN ---------------- */}
-          <div className="field">
-            <label className="field-label">Buy-in Amount ({currency})</label>
-            <input
-              type="number"
-              className="input"
-              value={gameType === "cash" ? buyIn : tournamentBuyIn}
-              min="0"
-              onChange={(e) => {
-                const v = Number(e.target.value);
-                if (gameType === "cash") setBuyIn(v);
-                else setTournamentBuyIn(v);
-              }}
-            />
-          </div>
+          {/* ======================================================
+              BUY-IN
+              ====================================================== */}
+          <AccordionSection title="Buy-In">
+            <div className="field">
+              <label className="field-label">
+                Buy-in Amount ({currency})
+              </label>
+              <input
+                type="number"
+                className="input"
+                value={gameType === "cash" ? buyIn : tournamentBuyIn}
+                onChange={(e) => {
+                  const v = Number(e.target.value);
+                  if (gameType === "cash") setBuyIn(v);
+                  else setTournamentBuyIn(v);
+                }}
+              />
+            </div>
+          </AccordionSection>
 
-          {/* ---------------- TABLE RULES ---------------- */}
+          {/* ======================================================
+              TABLE RULES (CASH ONLY)
+              ====================================================== */}
           {gameType === "cash" && (
-            <>
-              <h2 className="subtitle">Table Rules</h2>
-
-              <div className="rebuy-container">
-                <div className="player-item">
-                  <label className="checkbox-row">
-                    <input
-                      type="checkbox"
-                      checked={allowStraddle}
-                      onChange={() => setAllowStraddle((prev) => !prev)}
-                    />
-                    Allow Straddle
-                  </label>
-                </div>
-
-                <div className="player-item">
-                  <label className="checkbox-row">
-                    <input
-                      type="checkbox"
-                      checked={allowRunItTwice}
-                      onChange={() => setAllowRunItTwice((prev) => !prev)}
-                    />
-                    Allow Run It Twice
-                  </label>
-                </div>
+            <AccordionSection title="Table Rules">
+              <div className="player-item">
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={allowStraddle}
+                    onChange={() => setAllowStraddle(!allowStraddle)}
+                  />
+                  Allow Straddle
+                </label>
               </div>
-            </>
+
+              <div className="player-item">
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={allowRunItTwice}
+                    onChange={() => setAllowRunItTwice(!allowRunItTwice)}
+                  />
+                  Allow Run It Twice
+                </label>
+              </div>
+            </AccordionSection>
           )}
 
-          {/* ---------------- NOTES ---------------- */}
-          <div className="field">
-            <label className="field-label">Notes</label>
-            <textarea
-              className="textarea"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Optional notes for this game..."
-            />
-          </div>
+          {/* ======================================================
+              NOTES
+              ====================================================== */}
+          <AccordionSection title="Notes">
+            <div className="field">
+              <label className="field-label">Notes</label>
+              <textarea
+                className="textarea"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Optional notes for this game..."
+              />
+            </div>
+          </AccordionSection>
 
-          {/* ---------------- BUTTONS ---------------- */}
+          {/* ======================================================
+              BUTTONS
+              ====================================================== */}
           <button className="btn-primary action-btn" onClick={startGame}>
             Start Game
           </button>
