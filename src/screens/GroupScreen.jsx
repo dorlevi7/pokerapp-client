@@ -105,12 +105,14 @@ function GroupScreen() {
                 </ul>
               )}
 
-              <button
-                className="btn-primary start-btn"
-                onClick={() => toast("Game screen coming soon!", { icon: "🎮" })}
-              >
-                Start Game
-              </button>
+<button
+  className="btn-primary start-btn"
+  onClick={() => navigate(`/group/${groupId}/settings`)}
+
+>
+  Start Game
+</button>
+
 
               <button
                 className="btn-secondary back-btn"
