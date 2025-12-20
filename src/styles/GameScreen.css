@@ -276,9 +276,21 @@
     background: rgba(15, 25, 45, 0.85);
     padding: 24px 22px;
     border-radius: 18px;
+
+    /* ⭐ NEW — Highlight border for strong separation */
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+
+    /* ⭐ NEW — Outer glow to pop above blur */
     box-shadow:
-        0 0 20px rgba(0, 0, 0, 0.45),
+        0 0 25px rgba(0, 0, 0, 0.55),
+        0 0 12px rgba(255, 255, 255, 0.08),
         inset 0 0 20px rgba(0, 0, 0, 0.25);
+
+    /* Optional: subtle vertical gradient to look more premium */
+    background: linear-gradient(145deg,
+            rgba(20, 30, 50, 0.92),
+            rgba(10, 18, 35, 0.88));
+
     color: #e5e7eb;
     text-align: center;
     animation: modalFade 0.2s ease-out;
