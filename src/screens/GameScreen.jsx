@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/GameScreen.css";
+import { toast } from "react-hot-toast"; // ⭐ NEW
 
 function GameScreen() {
   const { groupId, gameId } = useParams();
@@ -9,7 +10,7 @@ function GameScreen() {
   const [game, setGame] = useState(null);
   const [players, setPlayers] = useState([]);
 
-  // 🟦 Local rebuy tracking (temporary for client-only mode)
+  // 🟦 Local rebuy tracking
   const [rebuyCounts, setRebuyCounts] = useState({});
   const [rebuyAmounts, setRebuyAmounts] = useState({});
 
@@ -45,28 +46,24 @@ function GameScreen() {
       if (data.success) {
         setGame((prev) => ({ ...prev, status: newStatus }));
 
-        // 🟦 Start timer when game becomes active
         if (newStatus === "active") {
           setElapsedTime(0);
           setTimerRunning(true);
         }
 
-        // 🟦 Stop timer when game finishes
         if (newStatus === "finished") {
           setTimerRunning(false);
-
-          // ⭐ Save duration (client only for now)
           setGame((prev) => ({
             ...prev,
             duration: elapsedTime
           }));
         }
       } else {
-        alert("Error updating status: " + data.error);
+        toast.error("Error updating status: " + data.error); // ⭐
       }
     } catch (err) {
       console.error("Error updating status:", err);
-      alert("Server error while updating status");
+      toast.error("Server error while updating status"); // ⭐
     }
   }
 
@@ -93,7 +90,7 @@ function GameScreen() {
   }
 
   /* ============================================================
-     OPEN REBUY MODAL — WITH LIMIT CHECK
+     OPEN REBUY MODAL
   ============================================================ */
   function openRebuyModal(playerId) {
     const settings = game.settings;
@@ -102,7 +99,7 @@ function GameScreen() {
     const max = Number(settings.maxRebuysAllowed);
 
     if (max > 0 && current >= max) {
-      alert("This player has reached the maximum number of rebuys.");
+      toast.error("This player has reached the maximum number of rebuys."); // ⭐
       return;
     }
 
@@ -125,33 +122,32 @@ function GameScreen() {
   }
 
   /* ============================================================
-     CONFIRM REBUY — WITH LIMIT + RANGE CHECK
+     CONFIRM REBUY
   ============================================================ */
   function confirmRebuy() {
     const { playerId, amount } = rebuyModal;
     const settings = game.settings;
 
-    // ⭐ NEW: validate amount if rebuyType = range
+    // Validate range
     if (settings.rebuyType === "range") {
       const min = Number(settings.minRebuy);
       const max = Number(settings.maxRebuy);
 
       if (amount < min || amount > max) {
-        alert(`Rebuy amount must be between ${min} and ${max} ${settings.currency}`);
-        return; // ❌ Stop here
+        toast.error(`Rebuy must be between ${min} and ${max} ${settings.currency}`); // ⭐
+        return;
       }
     }
 
-    // 🔵 Check max rebuys
     const current = rebuyCounts[playerId] || 0;
-    const max = Number(settings.maxRebuysAllowed);
+    const maxRebuys = Number(settings.maxRebuysAllowed);
 
-    if (max > 0 && current >= max) {
-      alert("Maximum number of rebuys reached.");
+    if (maxRebuys > 0 && current >= maxRebuys) {
+      toast.error("Maximum number of rebuys reached."); // ⭐
       return;
     }
 
-    // 🟢 Apply rebuy
+    // Apply rebuy
     setRebuyCounts((prev) => ({
       ...prev,
       [playerId]: (prev[playerId] || 0) + 1
@@ -161,6 +157,8 @@ function GameScreen() {
       ...prev,
       [playerId]: (prev[playerId] || 0) + amount
     }));
+
+    toast.success("Rebuy added!"); // ⭐ Nice feedback
 
     setRebuyModal({ open: false, playerId: null, amount: 0 });
   }
@@ -175,7 +173,7 @@ function GameScreen() {
   }
 
   /* ============================================================
-     LOAD GAME + PLAYERS
+     LOAD GAME
   ============================================================ */
   useEffect(() => {
     async function load() {
@@ -207,7 +205,7 @@ function GameScreen() {
   const settings = game.settings || {};
 
   /* ============================================================
-     GAME SUMMARY CALCULATIONS
+     SUMMARY
   ============================================================ */
   const totalRebuys = Object.values(rebuyCounts).reduce((a, b) => a + b, 0);
 
@@ -227,38 +225,26 @@ function GameScreen() {
         <div className="game-card">
           <h1 className="title">GAME #{gameId}</h1>
 
-          {/* TIMER WHILE ACTIVE */}
           {game.status === "active" && (
             <div className="game-timer">{formatTime(elapsedTime)}</div>
           )}
 
-          {/* STATUS BADGE */}
           <div className={`status-badge status-${game.status}`}>
             {game.status.toUpperCase()}
           </div>
 
-          {/* START / END BUTTONS */}
           {game.status === "pending" && (
-            <button
-              className="btn-primary start-btn"
-              onClick={() => updateStatus("active")}
-            >
+            <button className="btn-primary start-btn" onClick={() => updateStatus("active")}>
               Start Game
             </button>
           )}
 
           {game.status === "active" && (
-            <button
-              className="btn-secondary end-btn"
-              onClick={() => updateStatus("finished")}
-            >
+            <button className="btn-secondary end-btn" onClick={() => updateStatus("finished")}>
               End Game
             </button>
           )}
 
-          {/* ============================
-              PLAYER LIST
-          ============================ */}
           <h2 className="section-title">Players</h2>
 
           <ul className="players-list">
@@ -288,48 +274,28 @@ function GameScreen() {
                     )}
 
                   <div className="player-stats">
-                    <p>
-                      <strong>Buy-in:</strong> {settings.buyIn}{" "}
-                      {settings.currency}
-                    </p>
-                    <p>
-                      <strong>Rebuys:</strong> {rebuys}</p>
-                    <p>
-                      <strong>Total Spent:</strong> {spent} {settings.currency}
-                    </p>
+                    <p><strong>Buy-in:</strong> {settings.buyIn} {settings.currency}</p>
+                    <p><strong>Rebuys:</strong> {rebuys}</p>
+                    <p><strong>Total Spent:</strong> {spent} {settings.currency}</p>
                   </div>
                 </li>
               );
             })}
           </ul>
 
-          {/* ============================
-              GAME SUMMARY
-          ============================ */}
           <h2 className="section-title">Game Summary</h2>
 
           <div className="settings-box">
             <p><strong>Players:</strong> {players.length}</p>
             <p><strong>Total Rebuys:</strong> {totalRebuys}</p>
-            <p>
-              <strong>Total Money in Table:</strong> {totalMoneyInTable}{" "}
-              {settings.currency}
-            </p>
-            <p>
-              <strong>Buy-In:</strong> {settings.buyIn} {settings.currency}
-            </p>
+            <p><strong>Total Money in Table:</strong> {totalMoneyInTable} {settings.currency}</p>
+            <p><strong>Buy-In:</strong> {settings.buyIn} {settings.currency}</p>
 
-            {/* ⭐ Duration after finishing */}
             {game.status === "finished" && game.duration !== undefined && (
-              <p>
-                <strong>Duration:</strong> {formatTime(game.duration)}
-              </p>
+              <p><strong>Duration:</strong> {formatTime(game.duration)}</p>
             )}
           </div>
 
-          {/* ============================
-              GAME SETTINGS
-          ============================ */}
           <h2 className="section-title">Game Settings</h2>
 
           <div className="settings-box">
@@ -390,16 +356,14 @@ function GameScreen() {
                 />
 
                 <p className="note-small">
-                  Allowed range: {settings.minRebuy} – {settings.maxRebuy}{" "}
-                  {settings.currency}
+                  Allowed range: {settings.minRebuy} – {settings.maxRebuy} {settings.currency}
                 </p>
               </>
             )}
 
             {settings.rebuyType === "percentage" && (
               <p>
-                Rebuy Amount:{" "}
-                <strong>{rebuyModal.amount} {settings.currency}</strong>
+                Rebuy Amount: <strong>{rebuyModal.amount} {settings.currency}</strong>
                 <br />
                 ({settings.rebuyPercent}% of average stack)
               </p>
@@ -412,9 +376,7 @@ function GameScreen() {
 
               <button
                 className="btn-primary btn-gray"
-                onClick={() =>
-                  setRebuyModal({ open: false, playerId: null, amount: 0 })
-                }
+                onClick={() => setRebuyModal({ open: false, playerId: null, amount: 0 })}
               >
                 Cancel
               </button>
