@@ -105,14 +105,13 @@ function GroupScreen() {
                 </ul>
               )}
 
-<button
-  className="btn-primary start-btn"
-  onClick={() => navigate(`/group/${groupId}/settings`)}
+              <button
+                className="btn-primary start-btn"
+                onClick={() => navigate(`/group/${groupId}/settings`)}
 
->
-  Start Game
-</button>
-
+              >
+                Configure Game
+              </button>
 
               <button
                 className="btn-secondary back-btn"

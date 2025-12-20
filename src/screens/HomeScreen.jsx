@@ -59,15 +59,6 @@ function HomeScreen() {
             <button
               className="btn-primary btn-green"
               onClick={() =>
-                toast("Coming soon!", { icon: "🃏" })
-              }
-            >
-              Start New Game
-            </button>
-
-            <button
-              className="btn-primary btn-gray"
-              onClick={() =>
                 toast("Feature under construction!", { icon: "🚧" })
               }
             >
