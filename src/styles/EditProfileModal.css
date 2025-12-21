@@ -1,5 +1,5 @@
 /* Background blur overlay */
-.modal-overlay {
+.editProfile-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,6 +8,7 @@
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(4px);
     z-index: 90;
+    isolation: isolate;
 }
 
 /* Modal card */
@@ -28,7 +29,6 @@
     z-index: 100;
 
     color: #f1f5f9;
-    animation: fadeIn 0.2s ease-out;
 }
 
 @keyframes fadeIn {

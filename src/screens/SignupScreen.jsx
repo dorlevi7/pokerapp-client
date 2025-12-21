@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/SignupScreen.css";
-import { toast } from "react-hot-toast"; // ⭐ NEW
+import { toast } from "react-hot-toast";
 
 function SignupScreen() {
   const navigate = useNavigate();
@@ -16,9 +16,7 @@ function SignupScreen() {
     confirmPassword: "",
   });
 
-  // No need for error/success states anymore
-  // const [error, setError] = useState("");
-  // const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const API_BASE_URL =
     window.location.hostname === "localhost"
@@ -32,6 +30,9 @@ function SignupScreen() {
     });
   };
 
+  /* ============================================================
+     HANDLE SIGNUP
+  ============================================================ */
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -39,6 +40,8 @@ function SignupScreen() {
       toast.error("Passwords do not match");
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/users/signup`, {
@@ -52,16 +55,23 @@ function SignupScreen() {
       if (response.ok && data.success) {
         toast.success("Account created successfully!");
 
-        setTimeout(() => navigate("/login"), 1200);
+        setTimeout(() => {
+          navigate("/login");
+        }, 1200);
       } else {
         toast.error(data.error || "Signup failed");
       }
     } catch (err) {
       console.error("❌ Error during signup:", err);
       toast.error("Server error. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ============================================================
+     RENDER
+  ============================================================ */
   return (
     <div className="signup-container">
       <div className="card signup-card">
@@ -135,10 +145,12 @@ function SignupScreen() {
             required
           />
 
-          {/* ❌ Removed old inline error/success messages */}
-
-          <button type="submit" className="btn-primary signup-btn">
-            Sign Up
+          <button
+            type="submit"
+            className="btn-primary signup-btn"
+            disabled={loading}
+          >
+            {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 

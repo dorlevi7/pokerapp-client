@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/CreateGroup.css";
-import { toast } from "react-hot-toast"; // ⭐ NEW
+import { toast } from "react-hot-toast";
 
 function CreateGroup() {
   const navigate = useNavigate();
@@ -10,13 +10,16 @@ function CreateGroup() {
   const [groupName, setGroupName] = useState("");
   const [playerInput, setPlayerInput] = useState("");
   const [players, setPlayers] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
-  /* ------------------------ 🟢 Add Player ------------------------ */
+  /* ============================================================
+     🟢 Add Player
+     ============================================================ */
   const addPlayer = async () => {
     const trimmed = playerInput.trim();
     if (!trimmed) return;
@@ -47,7 +50,6 @@ function CreateGroup() {
 
       setPlayers((prev) => [...prev, user]);
       setPlayerInput("");
-
       toast.success(`Added ${user.username}`);
     } catch (err) {
       console.error("Error checking user:", err);
@@ -55,14 +57,18 @@ function CreateGroup() {
     }
   };
 
-  /* ------------------------ ❌ Remove Player ------------------------ */
+  /* ============================================================
+     ❌ Remove Player
+     ============================================================ */
   const removePlayer = (index) => {
     const removed = players[index];
     setPlayers((prev) => prev.filter((_, i) => i !== index));
     toast("Removed " + removed.username, { icon: "👤" });
   };
 
-  /* ------------------------ 🟢 Create Group ------------------------ */
+  /* ============================================================
+     🟢 Create Group
+     ============================================================ */
   const handleCreateGroup = async () => {
     if (!groupName.trim()) {
       toast.error("Please enter a group name.");
@@ -77,7 +83,14 @@ function CreateGroup() {
     const user = JSON.parse(localStorage.getItem("user"));
     const ownerId = user?.id;
 
+    if (!ownerId) {
+      toast.error("User not logged in.");
+      return;
+    }
+
     try {
+      setIsSubmitting(true);
+
       // 1️⃣ Create group
       const response = await fetch(`${API_BASE_URL}/api/groups/create`, {
         method: "POST",
@@ -115,7 +128,7 @@ function CreateGroup() {
             meta: {
               type: "group_invitation",
               groupId: group.id,
-              groupName: groupName,
+              groupName,
               inviterId: ownerId,
             },
           }),
@@ -123,14 +136,18 @@ function CreateGroup() {
       }
 
       toast.success("Group created! Invitations sent.");
-
       setTimeout(() => navigate("/home"), 1200);
     } catch (err) {
       console.error("❌ Error creating group:", err);
       toast.error("Server error. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  /* ============================================================
+     RENDER
+     ============================================================ */
   return (
     <>
       <NavBar />
@@ -147,6 +164,7 @@ function CreateGroup() {
             placeholder="Group Name"
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
+            disabled={isSubmitting}
           />
 
           {/* Add Player */}
@@ -157,9 +175,14 @@ function CreateGroup() {
               placeholder="Player email or username"
               value={playerInput}
               onChange={(e) => setPlayerInput(e.target.value)}
+              disabled={isSubmitting}
             />
 
-            <button className="btn-primary small-btn" onClick={addPlayer}>
+            <button
+              className="btn-primary small-btn"
+              onClick={addPlayer}
+              disabled={isSubmitting}
+            >
               Add
             </button>
           </div>
@@ -173,6 +196,7 @@ function CreateGroup() {
                   <button
                     className="remove-btn"
                     onClick={() => removePlayer(index)}
+                    disabled={isSubmitting}
                   >
                     ✖
                   </button>
@@ -182,8 +206,12 @@ function CreateGroup() {
           )}
 
           {/* Create Group */}
-          <button className="btn-primary create-btn" onClick={handleCreateGroup}>
-            Create Group
+          <button
+            className="btn-primary create-btn"
+            onClick={handleCreateGroup}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creating..." : "Create Group"}
           </button>
         </div>
       </div>

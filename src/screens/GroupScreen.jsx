@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/GroupScreen.css";
-import { toast } from "react-hot-toast"; // ⭐ NEW
+import { toast } from "react-hot-toast";
+
+import Loader from "../components/Loader";
 
 function GroupScreen() {
   const { groupId } = useParams();
@@ -19,6 +21,9 @@ function GroupScreen() {
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
+  /* ============================================================
+     LOAD GROUP DATA
+  ============================================================ */
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
@@ -30,7 +35,6 @@ function GroupScreen() {
 
         if (!membersRes.ok || !membersData.success) {
           toast.error("Failed to load group members.");
-          setLoading(false);
           return;
         }
 
@@ -61,7 +65,9 @@ function GroupScreen() {
               (m) => m.id === found.owner_id
             );
 
-            if (owner) setOwnerName(owner.username);
+            if (owner) {
+              setOwnerName(owner.username);
+            }
           }
         }
       } catch (error) {
@@ -75,6 +81,21 @@ function GroupScreen() {
     fetchGroupData();
   }, [groupId, API_BASE_URL]);
 
+  /* ============================================================
+     LOADING STATE
+  ============================================================ */
+  if (loading) {
+    return (
+      <>
+        <NavBar />
+        <Loader />
+      </>
+    );
+  }
+
+  /* ============================================================
+     RENDER
+  ============================================================ */
   return (
     <>
       <NavBar />
@@ -85,42 +106,35 @@ function GroupScreen() {
 
           {ownerName && <p className="subtitle">Owner: {ownerName}</p>}
 
-          {loading && <p>Loading group...</p>}
+          <h2 className="subtitle">Members</h2>
 
-          {!loading && (
-            <>
-              <h2 className="subtitle">Members</h2>
-
-              {members.length === 0 && (
-                <p className="empty-text">No members found.</p>
-              )}
-
-              {members.length > 0 && (
-                <ul className="member-list">
-                  {members.map((m) => (
-                    <li key={m.id} className="member-item">
-                      {m.username} ({m.email})
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <button
-                className="btn-primary start-btn"
-                onClick={() => navigate(`/group/${groupId}/settings`)}
-
-              >
-                Configure Game
-              </button>
-
-              <button
-                className="btn-secondary back-btn"
-                onClick={() => navigate("/my-groups")}
-              >
-                ⬅ Back
-              </button>
-            </>
+          {members.length === 0 && (
+            <p className="empty-text">No members found.</p>
           )}
+
+          {members.length > 0 && (
+            <ul className="member-list">
+              {members.map((m) => (
+                <li key={m.id} className="member-item">
+                  {m.username} ({m.email})
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <button
+            className="btn-primary start-btn"
+            onClick={() => navigate(`/group/${groupId}/settings`)}
+          >
+            Configure Game
+          </button>
+
+          <button
+            className="btn-secondary back-btn"
+            onClick={() => navigate("/my-groups")}
+          >
+            ⬅ Back
+          </button>
         </div>
       </div>
     </>

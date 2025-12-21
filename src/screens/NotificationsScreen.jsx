@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
-import { toast } from "react-hot-toast"; // ⭐ Toast only for meaningful actions
+import { toast } from "react-hot-toast";
 import "../styles/Notifications.css";
+
+import Loader from "../components/Loader";
 
 function NotificationsScreen() {
   const navigate = useNavigate();
@@ -14,9 +16,15 @@ function NotificationsScreen() {
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
+  /* ============================================================
+     LOAD NOTIFICATIONS
+  ============================================================ */
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return navigate("/login");
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
     async function fetchNotifications() {
       try {
@@ -46,9 +54,21 @@ function NotificationsScreen() {
     fetchNotifications();
   }, [navigate, API_BASE_URL]);
 
-  /* -------------------------------------------------------
-     ⭐ Mark single notification (NO toast — quiet UX)
-  ------------------------------------------------------- */
+  /* ============================================================
+     LOADING STATE
+  ============================================================ */
+  if (loading) {
+    return (
+      <>
+        <NavBar />
+        <Loader />
+      </>
+    );
+  }
+
+  /* ============================================================
+     ACTIONS
+  ============================================================ */
   async function markAsRead(id) {
     try {
       await fetch(`${API_BASE_URL}/api/notifications/${id}/read`, {
@@ -67,18 +87,18 @@ function NotificationsScreen() {
     }
   }
 
-  /* -------------------------------------------------------
-     ⭐⭐⭐ Mark ALL notifications as read (toast OK)
-  ------------------------------------------------------- */
   async function markAllAsRead() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
 
     try {
-      await fetch(`${API_BASE_URL}/api/notifications/user/${user.id}/read-all`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      });
+      await fetch(
+        `${API_BASE_URL}/api/notifications/user/${user.id}/read-all`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, is_read: true }))
@@ -91,9 +111,6 @@ function NotificationsScreen() {
     }
   }
 
-  /* -------------------------------------------------------
-     🟢 Join invitation
-  ------------------------------------------------------- */
   async function handleJoinGroup(notification) {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
@@ -116,7 +133,6 @@ function NotificationsScreen() {
       }
 
       await markAsRead(notification.id);
-
       toast.success(`Joined group "${notification.meta.groupName}"`);
     } catch (err) {
       console.error("❌ Failed to join group:", err);
@@ -124,14 +140,14 @@ function NotificationsScreen() {
     }
   }
 
-  /* -------------------------------------------------------
-     ❌ Decline invitation
-  ------------------------------------------------------- */
   async function handleDecline(notification) {
     await markAsRead(notification.id);
     toast("Invitation dismissed");
   }
 
+  /* ============================================================
+     RENDER
+  ============================================================ */
   return (
     <>
       <NavBar />
@@ -146,9 +162,7 @@ function NotificationsScreen() {
             </button>
           )}
 
-          {loading && <p>Loading...</p>}
-
-          {!loading && notifications.length === 0 && (
+          {notifications.length === 0 && (
             <p className="empty-text">No notifications yet.</p>
           )}
 

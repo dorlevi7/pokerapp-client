@@ -4,6 +4,8 @@ import "../styles/EditProfileModal.css";
 function EditProfileModal({ isOpen, onClose, user, onSave }) {
   if (!isOpen) return null;
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const [form, setForm] = useState({
     firstName: user.first_name,
     lastName: user.last_name,
@@ -16,14 +18,23 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    onSave(form);
-  };
+const handleSubmit = async () => {
+  try {
+    setIsSaving(true);
+    await onSave(form); // onSave צריך להחזיר Promise
+    onClose();
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   return (
     <>
       {/* Background blur overlay */}
-      <div className="modal-overlay" onClick={onClose}></div>
+      <div
+        className="editProfile-modal-overlay"
+        onClick={isSaving ? undefined : onClose}
+      />
 
       {/* Actual modal card */}
       <div className="modal-card">
@@ -81,13 +92,23 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
 
         <div className="modal-actions">
-          <button className="modal-btn cancel" onClick={onClose}>
-            Cancel
-          </button>
+        <button
+          className="modal-btn cancel"
+          onClick={onClose}
+          disabled={isSaving}
+        >
+          Cancel
+        </button>
 
-          <button className="modal-btn save" onClick={handleSubmit}>
-            Save Changes
-          </button>
+
+        <button
+          className="modal-btn save"
+          onClick={handleSubmit}
+          disabled={isSaving}
+        >
+          {isSaving ? "Saving..." : "Save Changes"}
+        </button>
+
         </div>
       </div>
     </>

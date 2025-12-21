@@ -8,35 +8,38 @@ function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const [loadingUnread, setLoadingUnread] = useState(true);
+
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
       : "https://pokerapp-server.onrender.com";
 
   // ⭐ Fetch unread notifications count
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return;
+useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return;
 
-    async function loadUnread() {
-      try {
-        const res = await fetch(
-          `${API_BASE_URL}/api/notifications/user/${user.id}`,
-          { headers: { "Content-Type": "application/json" } }
-        );
-        const data = await res.json();
+async function loadUnread() {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/api/notifications/user/${user.id}`
+    );
+    const data = await res.json();
 
-        if (data.success) {
-          const unread = data.data.filter((n) => !n.is_read).length;
-          setUnreadCount(unread);
-        }
-      } catch (err) {
-        console.error("❌ Failed to load unread count:", err);
-      }
+    if (data.success) {
+      const unread = data.data.filter((n) => !n.is_read).length;
+      setUnreadCount(unread);
     }
+  } catch (err) {
+    console.error("❌ Failed to load unread count:", err);
+  } finally {
+    setLoadingUnread(false); // ⭐ חשוב
+  }
+}
 
-    loadUnread();
-  }, []);
+  loadUnread();
+}, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -80,9 +83,10 @@ function NavBar() {
               Notifications
             </button>
 
-            {unreadCount > 0 && (
-              <span className="notif-badge">{unreadCount}</span>
-            )}
+          {!loadingUnread && unreadCount > 0 && (
+            <span className="notif-badge">{unreadCount}</span>
+          )}
+
           </div>
 
           <button
@@ -124,9 +128,10 @@ function NavBar() {
             }}
           >
             Notifications
-            {unreadCount > 0 && (
+            {!loadingUnread && unreadCount > 0 && (
               <span className="notif-badge mobile-badge">{unreadCount}</span>
             )}
+
           </button>
 
           <button

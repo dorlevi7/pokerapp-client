@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import "../styles/GameSettingsScreen.css";
 
+import Loader from "../components/Loader";
+
 /* ============================================================
    📌 Accordion Component — clean, minimal, professional
    ============================================================ */
@@ -71,6 +73,8 @@ function GameSettingsScreen() {
 
   const [notes, setNotes] = useState("");
 
+  const [loading, setLoading] = useState(true);
+
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
@@ -79,19 +83,28 @@ function GameSettingsScreen() {
   /* ============================================================
      📌 Fetch Group Members
      ============================================================ */
-  useEffect(() => {
-    const fetchMembers = async () => {
-      const res = await fetch(`${API_BASE_URL}/api/groups/${groupId}/members`);
+useEffect(() => {
+  const fetchMembers = async () => {
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/api/groups/${groupId}/members`
+      );
       const data = await res.json();
 
       if (data.success) {
         setMembers(data.data);
         setSelectedPlayers(data.data.map((m) => m.id));
       }
-    };
+    } catch (err) {
+      console.error("Error loading members:", err);
+    } finally {
+      // ⭐ זה סעיף 2 — סיום טעינה
+      setLoading(false);
+    }
+  };
 
-    fetchMembers();
-  }, [groupId, API_BASE_URL]);
+  fetchMembers();
+}, [groupId, API_BASE_URL]);
 
   function togglePlayer(id) {
     setSelectedPlayers((prev) =>
@@ -110,6 +123,11 @@ async function startGame() {
 
     if (!createdBy) {
       alert("User not logged in!");
+      return;
+    }
+
+    if (selectedPlayers.length === 0) {
+      alert("Please select at least one player");
       return;
     }
 
@@ -170,6 +188,16 @@ async function startGame() {
   /* ============================================================
      📌 JSX RETURN
      ============================================================ */
+
+     if (loading) {
+  return (
+    <>
+      <NavBar />
+      <Loader />
+    </>
+  );
+}
+
   return (
     <>
       <NavBar />
