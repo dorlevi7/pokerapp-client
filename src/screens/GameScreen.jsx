@@ -59,6 +59,11 @@ function GameScreen() {
             duration: elapsedTime
           }));
         }
+
+        toast.success(
+        newStatus === "active" ? "Game started!" : "Game finished!"
+        );
+
       } else {
         toast.error("Error updating status: " + data.error); // ⭐
       }

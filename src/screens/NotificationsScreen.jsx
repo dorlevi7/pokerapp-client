@@ -81,6 +81,7 @@ function NotificationsScreen() {
           n.id === id ? { ...n, is_read: true } : n
         )
       );
+        toast.success("Notification marked as read");
     } catch (err) {
       console.error("❌ Failed to mark notification:", err);
       toast.error("Failed to update notification.");

@@ -4,6 +4,7 @@ import NavBar from "../components/NavBar";
 import "../styles/GameSettingsScreen.css";
 
 import Loader from "../components/Loader";
+import { toast } from "react-hot-toast";
 
 /* ============================================================
    📌 Accordion Component — clean, minimal, professional
@@ -122,13 +123,13 @@ async function startGame() {
     const createdBy = storedUser?.id;
 
     if (!createdBy) {
-      alert("User not logged in!");
-      return;
+    toast.error("User not logged in.");
+    return;
     }
 
     if (selectedPlayers.length === 0) {
-      alert("Please select at least one player");
-      return;
+    toast.error("Please select at least one player.");
+    return;
     }
 
     const payload = {
@@ -171,18 +172,20 @@ async function startGame() {
     const data = await res.json();
 
     if (!data.success) {
-      alert("Error creating game: " + data.error);
-      return;
+        toast.error(data.error || "Failed to create game.");
+        return;
     }
 
     const gameId = data.data.gameId;
 
+    toast.success("Game created successfully!");
+
     navigate(`/group/${groupId}/game/${gameId}`);
 
-  } catch (err) {
+    } catch (err) {
     console.error("Error starting game:", err);
-    alert("Server error while creating game");
-  }
+    toast.error("Server error while creating game.");
+    }
 }
 
   /* ============================================================
