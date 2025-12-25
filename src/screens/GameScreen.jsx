@@ -26,6 +26,9 @@ function GameScreen() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
 
+  // 🟦 Rebuy history (events)
+const [rebuyHistory, setRebuyHistory] = useState([]);
+
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
@@ -211,6 +214,7 @@ async function confirmRebuy() {
 useEffect(() => {
   async function load() {
     try {
+      // 🔹 1. Game + players + aggregated rebuys
       const res = await fetch(`${API_BASE_URL}/api/games/${gameId}`);
       const data = await res.json();
 
@@ -218,20 +222,33 @@ useEffect(() => {
         setGame(data.data.game);
         setPlayers(data.data.players);
 
-        /* ============================================
-           🔥 INIT REBUYS FROM DB
-        ============================================ */
         const counts = {};
         const amounts = {};
 
         (data.data.rebuys || []).forEach((r) => {
-        counts[r.user_id] = Number(r.count);
-        amounts[r.user_id] = Number(r.total);
+          counts[r.user_id] = Number(r.count);
+          amounts[r.user_id] = Number(r.total);
         });
 
         setRebuyCounts(counts);
         setRebuyAmounts(amounts);
       }
+
+      // 🔹 2. Rebuy history (EVENTS)
+      const historyRes = await fetch(
+        `${API_BASE_URL}/api/games/${gameId}/rebuys/history`
+      );
+      const historyData = await historyRes.json();
+
+    if (historyData.success) {
+    setRebuyHistory(
+        historyData.data.map(r => ({
+        ...r,
+        secondsFromStart: Number(r.seconds_from_start)
+        }))
+    );
+    }
+
     } catch (err) {
       console.error("Error loading game:", err);
     }
@@ -342,6 +359,31 @@ useEffect(() => {
               <p><strong>Duration:</strong> {formatTime(game.duration)}</p>
             )}
           </div>
+
+<h2 className="section-title">Rebuy History</h2>
+
+<div className="rebuy-history-box">
+  {rebuyHistory.length === 0 ? (
+    <p className="empty-text">No rebuys yet</p>
+  ) : (
+    <ul className="rebuy-history">
+      {rebuyHistory.map((r, index) => (
+        <li key={index} className="rebuy-item">
+          <div className="rebuy-main">
+            <span className="rebuy-user">{r.username}</span>
+            <span className="rebuy-amount">
+              +{r.amount} {settings.currency}
+            </span>
+          </div>
+
+          <div className="rebuy-time">
+            ⏱ {formatTime(r.secondsFromStart)}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
           <h2 className="section-title">Game Settings</h2>
 
