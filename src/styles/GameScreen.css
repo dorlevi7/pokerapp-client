@@ -560,3 +560,14 @@
 .results-table tbody tr:last-child td {
     border-bottom: none;
 }
+
+/* ================================
+   Status badges wrapper
+================================ */
+.status-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+

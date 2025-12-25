@@ -7,6 +7,8 @@ import Loader from "../components/Loader";
 
 import EndGameModal from "../components/EndGameModal";
 
+import FinalResultsModal from "../components/FinalResultsModal";
+
 function GameScreen() {
   const { groupId, gameId } = useParams();
 
@@ -26,6 +28,8 @@ const [endGameModalOpen, setEndGameModalOpen] = useState(false);
 // 🟩 Final game results (after End Game)
 const [finalResults, setFinalResults] = useState(null);
 
+const [gameLocked, setGameLocked] = useState(false);
+
   // 🟦 Rebuy modal state
   const [rebuyModal, setRebuyModal] = useState({
     open: false,
@@ -39,6 +43,8 @@ const [finalResults, setFinalResults] = useState(null);
 
   // 🟦 Rebuy history (events)
 const [rebuyHistory, setRebuyHistory] = useState([]);
+
+const [finalResultsModalOpen, setFinalResultsModalOpen] = useState(false);
 
   const API_BASE_URL =
     window.location.hostname === "localhost"
@@ -257,6 +263,8 @@ Expected: ${expectedTotal} ${game.settings.currency}`
 
   toast.success("Final stacks validated & results calculated ✔️");
 
+  setGameLocked(true);
+
   // 🧠 בשלב הזה:
   // results = מוכן ל־DB / סיכום / גרפים
 
@@ -266,6 +274,38 @@ Expected: ${expectedTotal} ${game.settings.currency}`
   // TODO (שלב הבא):
   // saveResultsToServer(results)
   // updateStatus("finished")
+}
+
+/* ============================================================
+   SAVE FINAL RESULTS TO SERVER
+============================================================ */
+async function saveResultsToServer(results) {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/api/games/${gameId}/finish`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          results,
+          durationSeconds: elapsedTime
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!data.success) {
+      toast.error(data.error || "Failed to finish game");
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Finish game error:", err);
+    toast.error("Server error while finishing game");
+    return false;
+  }
 }
 
   /* ============================================================
@@ -287,21 +327,43 @@ useEffect(() => {
       const res = await fetch(`${API_BASE_URL}/api/games/${gameId}`);
       const data = await res.json();
 
-      if (data.success) {
-        setGame(data.data.game);
-        setPlayers(data.data.players);
+if (data.success) {
+  setGame(data.data.game);
+  setPlayers(data.data.players);
 
-        const counts = {};
-        const amounts = {};
+  const counts = {};
+  const amounts = {};
 
-        (data.data.rebuys || []).forEach((r) => {
-          counts[r.user_id] = Number(r.count);
-          amounts[r.user_id] = Number(r.total);
-        });
+  (data.data.rebuys || []).forEach((r) => {
+    counts[r.user_id] = Number(r.count);
+    amounts[r.user_id] = Number(r.total);
+  });
 
-        setRebuyCounts(counts);
-        setRebuyAmounts(amounts);
-      }
+  setRebuyCounts(counts);
+  setRebuyAmounts(amounts);
+
+  // 🔹 1.1 Load final results from DB if game finished
+  if (data.data.game.status === "finished") {
+    const resultsRes = await fetch(
+      `${API_BASE_URL}/api/games/${gameId}/results`
+    );
+    const resultsData = await resultsRes.json();
+
+if (resultsData.success) {
+  const normalized = resultsData.data.map(r => ({
+    userId: r.user_id,
+    username: r.username,
+    moneyIn: r.money_in,
+    moneyOut: r.money_out,
+    profit: r.profit
+  }));
+
+  setFinalResults(normalized);
+  setGameLocked(true);
+}
+
+  }
+}
 
       // 🔹 2. Rebuy history (EVENTS)
       const historyRes = await fetch(
@@ -357,52 +419,27 @@ if (userId) {
    INIT TIMER FROM DB (CRITICAL)
 ============================================================ */
 useEffect(() => {
-  console.log("🟡 useEffect(game) fired");
-  console.log("game:", game);
-
-  if (!game) {
-    console.log("⛔ game is null/undefined");
-    return;
-  }
-
-  console.log("status:", game.status);
-  console.log("started_at (raw):", game.started_at);
-  console.log("typeof started_at:", typeof game.started_at);
+  if (!game) return;
 
   if (game.status === "active" && game.started_at) {
-    const dateObj = new Date(game.started_at);
-
-    console.log("Date object:", dateObj);
-    console.log("Date is valid:", !isNaN(dateObj.getTime()));
-
-    const startedAt = dateObj.getTime();
+    const startedAt = new Date(game.started_at).getTime();
     const now = Date.now();
-
-    console.log("startedAt (ms):", startedAt);
-    console.log("now (ms):", now);
-    console.log("diff (ms):", now - startedAt);
 
     const seconds = Math.max(
       0,
       Math.floor((now - startedAt) / 1000)
     );
 
-    console.log("elapsed seconds:", seconds);
-
     setElapsedTime(seconds);
     setTimerRunning(true);
   }
 
-  if (game.status === "finished") {
-    console.log("duration_seconds:", game.duration_seconds);
-    console.log("typeof duration_seconds:", typeof game.duration_seconds);
-
-    if (game.duration_seconds != null) {
-      setElapsedTime(Math.floor(game.duration_seconds));
-      setTimerRunning(false);
-    }
+  if (game.status === "finished" && game.duration_seconds != null) {
+    setElapsedTime(Math.floor(game.duration_seconds));
+    setTimerRunning(false);
   }
 }, [game]);
+
 
 
   if (!game) {
@@ -445,9 +482,43 @@ useEffect(() => {
             <div className="game-timer">{formatTime(elapsedTime)}</div>
           )}
 
-          <div className={`status-badge status-${game.status}`}>
-            {game.status.toUpperCase()}
-          </div>
+<div className="status-badges">
+  <div className={`status-badge status-${game.status}`}>
+    {game.status.toUpperCase()}
+  </div>
+
+  {gameLocked && (
+    <div className="status-badge status-finished">
+      FINAL RESULTS READY
+    </div>
+  )}
+</div>
+
+{/* ⭐ PRIMARY ACTION – TOP */}
+{gameLocked && game.status === "active" && (
+  <div className="top-action-bar">
+    <button
+      className="btn-primary end-btn"
+      onClick={async () => {
+        const success = await saveResultsToServer(finalResults);
+        if (!success) return;
+
+        toast.success("Game finished & saved ✔️");
+
+        setGame(prev => ({
+          ...prev,
+          status: "finished",
+          duration_seconds: elapsedTime
+        }));
+
+        setTimerRunning(false);
+        setFinalResultsModalOpen(true);
+      }}
+    >
+      Confirm & Close Game
+    </button>
+  </div>
+)}
 
           {game.status === "pending" && (
             <button className="btn-primary start-btn" onClick={() => updateStatus("active")}>
@@ -455,7 +526,7 @@ useEffect(() => {
             </button>
           )}
 
-{game.status === "active" && (
+{game.status === "active" && !gameLocked && (
   <button
     className="btn-secondary end-btn"
     onClick={() => setEndGameModalOpen(true)}
@@ -463,6 +534,7 @@ useEffect(() => {
     End Game
   </button>
 )}
+
 
 
           <h2 className="section-title">Players</h2>
@@ -481,17 +553,18 @@ useEffect(() => {
                     <span className="player-name">{p.username}</span>
                   </div>
 
-                  {game.status === "active" &&
-                    settings.gameType === "cash" &&
-                    settings.allowRebuy && (
-                      <button
-                        className={`rebuy-btn ${maxReached ? "maxed" : ""}`}
-                        disabled={maxReached}
-                        onClick={() => openRebuyModal(p.id)}
-                      >
-                        {maxReached ? "Maxed" : "+ Rebuy"}
-                      </button>
-                    )}
+{game.status === "active" &&
+  !gameLocked &&
+  !gameLocked && (
+    <button
+      className={`rebuy-btn ${maxReached ? "maxed" : ""}`}
+      disabled={maxReached}
+      onClick={() => openRebuyModal(p.id)}
+    >
+      {maxReached ? "Maxed" : "+ Rebuy"}
+    </button>
+)}
+
 
                   <div className="player-stats">
                     <p><strong>Buy-in:</strong> {settings.buyIn} {settings.currency}</p>
@@ -540,6 +613,8 @@ useEffect(() => {
         </tbody>
       </table>
     </div>
+
+
   </>
 )}
 
@@ -676,6 +751,14 @@ useEffect(() => {
     currency={game.settings.currency}
     onClose={() => setEndGameModalOpen(false)}
     onConfirm={handleEndGameConfirm}
+  />
+)}
+
+{finalResultsModalOpen && finalResults && (
+  <FinalResultsModal
+    results={finalResults}
+    currency={settings.currency}
+    duration={formatTime(elapsedTime)}
   />
 )}
 
