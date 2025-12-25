@@ -20,21 +20,21 @@ function GameScreen() {
   const [rebuyAmounts, setRebuyAmounts] = useState({});
 
   // 🆕 Group name
-const [groupName, setGroupName] = useState("");
+  const [groupName, setGroupName] = useState("");
 
-// 🟥 End game modal
-const [endGameModalOpen, setEndGameModalOpen] = useState(false);
+  // 🟥 End game modal
+  const [endGameModalOpen, setEndGameModalOpen] = useState(false);
 
-// 🟩 Final game results (after End Game)
-const [finalResults, setFinalResults] = useState(null);
+  // 🟩 Final game results (after End Game)
+  const [finalResults, setFinalResults] = useState(null);
 
-const [gameLocked, setGameLocked] = useState(false);
+  const [gameLocked, setGameLocked] = useState(false);
 
   // 🟦 Rebuy modal state
   const [rebuyModal, setRebuyModal] = useState({
     open: false,
     playerId: null,
-    amount: 0
+    amount: 0,
   });
 
   // 🟦 Game timer
@@ -42,9 +42,9 @@ const [gameLocked, setGameLocked] = useState(false);
   const [timerRunning, setTimerRunning] = useState(false);
 
   // 🟦 Rebuy history (events)
-const [rebuyHistory, setRebuyHistory] = useState([]);
+  const [rebuyHistory, setRebuyHistory] = useState([]);
 
-const [finalResultsModalOpen, setFinalResultsModalOpen] = useState(false);
+  const [finalResultsModalOpen, setFinalResultsModalOpen] = useState(false);
 
   const API_BASE_URL =
     window.location.hostname === "localhost"
@@ -59,7 +59,7 @@ const [finalResultsModalOpen, setFinalResultsModalOpen] = useState(false);
       const res = await fetch(`${API_BASE_URL}/api/games/${gameId}/status`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus }),
       });
 
       const data = await res.json();
@@ -71,14 +71,13 @@ const [finalResultsModalOpen, setFinalResultsModalOpen] = useState(false);
           setTimerRunning(true);
         }
 
-if (newStatus === "finished") {
-  setTimerRunning(false);
-}
+        if (newStatus === "finished") {
+          setTimerRunning(false);
+        }
 
         toast.success(
-        newStatus === "active" ? "Game started!" : "Game finished!"
+          newStatus === "active" ? "Game started!" : "Game finished!"
         );
-
       } else {
         toast.error("Error updating status: " + data.error); // ⭐
       }
@@ -138,175 +137,169 @@ if (newStatus === "finished") {
     setRebuyModal({
       open: true,
       playerId,
-      amount: defaultAmount
+      amount: defaultAmount,
     });
   }
 
   /* ============================================================
      CONFIRM REBUY
   ============================================================ */
-async function confirmRebuy() {
-  const { playerId, amount } = rebuyModal;
-  const settings = game.settings;
+  async function confirmRebuy() {
+    const { playerId, amount } = rebuyModal;
+    const settings = game.settings;
 
-  // ✅ Validate range
-  if (settings.rebuyType === "range") {
-    const min = Number(settings.minRebuy);
-    const max = Number(settings.maxRebuy);
+    // ✅ Validate range
+    if (settings.rebuyType === "range") {
+      const min = Number(settings.minRebuy);
+      const max = Number(settings.maxRebuy);
 
-    if (amount < min || amount > max) {
-      toast.error(
-        `Rebuy must be between ${min} and ${max} ${settings.currency}`
-      );
+      if (amount < min || amount > max) {
+        toast.error(
+          `Rebuy must be between ${min} and ${max} ${settings.currency}`
+        );
+        return;
+      }
+    }
+
+    const current = rebuyCounts[playerId] || 0;
+    const maxRebuys = Number(settings.maxRebuysAllowed);
+
+    if (maxRebuys > 0 && current >= maxRebuys) {
+      toast.error("Maximum number of rebuys reached.");
       return;
     }
-  }
 
-  const current = rebuyCounts[playerId] || 0;
-  const maxRebuys = Number(settings.maxRebuysAllowed);
-
-  if (maxRebuys > 0 && current >= maxRebuys) {
-    toast.error("Maximum number of rebuys reached.");
-    return;
-  }
-
-  try {
-    // 🔥 שליחה לשרת
-    const res = await fetch(
-      `${API_BASE_URL}/api/games/${gameId}/rebuy`,
-      {
+    try {
+      // 🔥 שליחה לשרת
+      const res = await fetch(`${API_BASE_URL}/api/games/${gameId}/rebuy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: playerId,
-          amount
-        })
+          amount,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.error || "Failed to save rebuy");
+        return;
       }
-    );
 
-    const data = await res.json();
+      // 🔥 REALTIME UPDATE — add rebuy event to history
+      setRebuyHistory((prev) => [
+        ...prev,
+        {
+          id: data.data.id,
+          username:
+            players.find((p) => p.id === playerId)?.username || "Player",
+          amount,
+          secondsFromStart: elapsedTime,
+        },
+      ]);
 
-    if (!data.success) {
-      toast.error(data.error || "Failed to save rebuy");
-      return;
+      // ✅ עדכון state מקומי רק אחרי הצלחה
+      setRebuyCounts((prev) => ({
+        ...prev,
+        [playerId]: (prev[playerId] || 0) + 1,
+      }));
+
+      setRebuyAmounts((prev) => ({
+        ...prev,
+        [playerId]: (prev[playerId] || 0) + amount,
+      }));
+
+      toast.success("Rebuy saved 💰");
+
+      setRebuyModal({ open: false, playerId: null, amount: 0 });
+    } catch (err) {
+      console.error("Rebuy error:", err);
+      toast.error("Server error while saving rebuy");
     }
-    
-    // 🔥 REALTIME UPDATE — add rebuy event to history
-setRebuyHistory(prev => [
-  ...prev,
-  {
-    id: data.data.id,
-    username:
-      players.find(p => p.id === playerId)?.username || "Player",
-    amount,
-    secondsFromStart: elapsedTime
   }
-]);
 
-    // ✅ עדכון state מקומי רק אחרי הצלחה
-    setRebuyCounts((prev) => ({
-      ...prev,
-      [playerId]: (prev[playerId] || 0) + 1
-    }));
-
-    setRebuyAmounts((prev) => ({
-      ...prev,
-      [playerId]: (prev[playerId] || 0) + amount
-    }));
-
-    toast.success("Rebuy saved 💰");
-
-    setRebuyModal({ open: false, playerId: null, amount: 0 });
-  } catch (err) {
-    console.error("Rebuy error:", err);
-    toast.error("Server error while saving rebuy");
-  }
-}
-
-/* ============================================================
+  /* ============================================================
    END GAME CONFIRM HANDLER (STEP 2)
 ============================================================ */
-function handleEndGameConfirm(finalStacks) {
-  // 🔹 1. Sum final stacks
-  const totalFinalChips = Object.values(finalStacks).reduce(
-    (sum, chips) => sum + Number(chips),
-    0
-  );
+  function handleEndGameConfirm(finalStacks) {
+    // 🔹 1. Sum final stacks
+    const totalFinalChips = Object.values(finalStacks).reduce(
+      (sum, chips) => sum + Number(chips),
+      0
+    );
 
-  const expectedTotal = totalMoneyInTable;
+    const expectedTotal = totalMoneyInTable;
 
-  if (totalFinalChips !== expectedTotal) {
-    toast.error(
-      `Chip mismatch ❌  
+    if (totalFinalChips !== expectedTotal) {
+      toast.error(
+        `Chip mismatch ❌  
 Entered: ${totalFinalChips} ${game.settings.currency}  
 Expected: ${expectedTotal} ${game.settings.currency}`
-    );
-    return;
+      );
+      return;
+    }
+
+    // 🔹 2. Calculate results per player
+    const results = players.map((player) => {
+      const rebuys = rebuyAmounts[player.id] || 0;
+      const moneyIn = game.settings.buyIn + rebuys;
+      const moneyOut = Number(finalStacks[player.id] || 0);
+
+      return {
+        userId: player.id,
+        username: player.username,
+        moneyIn,
+        moneyOut,
+        profit: moneyOut - moneyIn,
+      };
+    });
+
+    setFinalResults(results);
+
+    toast.success("Final stacks validated & results calculated ✔️");
+
+    setGameLocked(true);
+
+    // 🧠 בשלב הזה:
+    // results = מוכן ל־DB / סיכום / גרפים
+
+    // ⛔ עדיין לא סוגרים משחק
+    setEndGameModalOpen(false);
+
+    // TODO (שלב הבא):
+    // saveResultsToServer(results)
+    // updateStatus("finished")
   }
 
-  // 🔹 2. Calculate results per player
-  const results = players.map((player) => {
-    const rebuys = rebuyAmounts[player.id] || 0;
-    const moneyIn = game.settings.buyIn + rebuys;
-    const moneyOut = Number(finalStacks[player.id] || 0);
-
-    return {
-      userId: player.id,
-      username: player.username,
-      moneyIn,
-      moneyOut,
-      profit: moneyOut - moneyIn
-    };
-  });
-
-  setFinalResults(results);
-
-  toast.success("Final stacks validated & results calculated ✔️");
-
-  setGameLocked(true);
-
-  // 🧠 בשלב הזה:
-  // results = מוכן ל־DB / סיכום / גרפים
-
-  // ⛔ עדיין לא סוגרים משחק
-  setEndGameModalOpen(false);
-
-  // TODO (שלב הבא):
-  // saveResultsToServer(results)
-  // updateStatus("finished")
-}
-
-/* ============================================================
+  /* ============================================================
    SAVE FINAL RESULTS TO SERVER
 ============================================================ */
-async function saveResultsToServer(results) {
-  try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/games/${gameId}/finish`,
-      {
+  async function saveResultsToServer(results) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/games/${gameId}/finish`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           results,
-          durationSeconds: elapsedTime
-        })
+          durationSeconds: elapsedTime,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.error || "Failed to finish game");
+        return false;
       }
-    );
 
-    const data = await res.json();
-
-    if (!data.success) {
-      toast.error(data.error || "Failed to finish game");
+      return true;
+    } catch (err) {
+      console.error("Finish game error:", err);
+      toast.error("Server error while finishing game");
       return false;
     }
-
-    return true;
-  } catch (err) {
-    console.error("Finish game error:", err);
-    toast.error("Server error while finishing game");
-    return false;
   }
-}
 
   /* ============================================================
      CALCULATE AVERAGE STACK
@@ -320,127 +313,118 @@ async function saveResultsToServer(results) {
   /* ============================================================
      LOAD GAME
   ============================================================ */
-useEffect(() => {
-  async function load() {
-    try {
-      // 🔹 1. Game + players + aggregated rebuys
-      const res = await fetch(`${API_BASE_URL}/api/games/${gameId}`);
-      const data = await res.json();
+  useEffect(() => {
+    async function load() {
+      try {
+        // 🔹 1. Game + players + aggregated rebuys
+        const res = await fetch(`${API_BASE_URL}/api/games/${gameId}`);
+        const data = await res.json();
 
-if (data.success) {
-  setGame(data.data.game);
-  setPlayers(data.data.players);
+        if (data.success) {
+          setGame(data.data.game);
+          setPlayers(data.data.players);
 
-  const counts = {};
-  const amounts = {};
+          const counts = {};
+          const amounts = {};
 
-  (data.data.rebuys || []).forEach((r) => {
-    counts[r.user_id] = Number(r.count);
-    amounts[r.user_id] = Number(r.total);
-  });
+          (data.data.rebuys || []).forEach((r) => {
+            counts[r.user_id] = Number(r.count);
+            amounts[r.user_id] = Number(r.total);
+          });
 
-  setRebuyCounts(counts);
-  setRebuyAmounts(amounts);
+          setRebuyCounts(counts);
+          setRebuyAmounts(amounts);
 
-  // 🔹 1.1 Load final results from DB if game finished
-  if (data.data.game.status === "finished") {
-    const resultsRes = await fetch(
-      `${API_BASE_URL}/api/games/${gameId}/results`
-    );
-    const resultsData = await resultsRes.json();
+          // 🔹 1.1 Load final results from DB if game finished
+          if (data.data.game.status === "finished") {
+            const resultsRes = await fetch(
+              `${API_BASE_URL}/api/games/${gameId}/results`
+            );
+            const resultsData = await resultsRes.json();
 
-if (resultsData.success) {
-  const normalized = resultsData.data.map(r => ({
-    userId: r.user_id,
-    username: r.username,
-    moneyIn: r.money_in,
-    moneyOut: r.money_out,
-    profit: r.profit
-  }));
+            if (resultsData.success) {
+              const normalized = resultsData.data.map((r) => ({
+                userId: r.user_id,
+                username: r.username,
+                moneyIn: r.money_in,
+                moneyOut: r.money_out,
+                profit: r.profit,
+              }));
 
-  setFinalResults(normalized);
-  setGameLocked(true);
-}
+              setFinalResults(normalized);
+              setGameLocked(true);
+            }
+          }
+        }
 
-  }
-}
-
-      // 🔹 2. Rebuy history (EVENTS)
-      const historyRes = await fetch(
-        `${API_BASE_URL}/api/games/${gameId}/rebuys/history`
-      );
-      const historyData = await historyRes.json();
-
-      if (historyData.success) {
-        setRebuyHistory(
-          historyData.data.map((r) => ({
-            ...r,
-            secondsFromStart: Number(r.seconds_from_start)
-          }))
+        // 🔹 2. Rebuy history (EVENTS)
+        const historyRes = await fetch(
+          `${API_BASE_URL}/api/games/${gameId}/rebuys/history`
         );
+        const historyData = await historyRes.json();
+
+        if (historyData.success) {
+          setRebuyHistory(
+            historyData.data.map((r) => ({
+              ...r,
+              secondsFromStart: Number(r.seconds_from_start),
+            }))
+          );
+        }
+
+        // 🔹 3. Group name (FIXED)
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id;
+
+        if (userId) {
+          const groupsRes = await fetch(
+            `${API_BASE_URL}/api/groups/my-groups`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId }),
+            }
+          );
+
+          const groupsData = await groupsRes.json();
+
+          if (groupsData.success) {
+            const group = groupsData.data.find((g) => g.id === Number(groupId));
+
+            if (group) {
+              setGroupName(group.name);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error loading game:", err);
       }
-
-// 🔹 3. Group name (FIXED)
-const user = JSON.parse(localStorage.getItem("user"));
-const userId = user?.id;
-
-if (userId) {
-  const groupsRes = await fetch(
-    `${API_BASE_URL}/api/groups/my-groups`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId })
     }
-  );
 
-  const groupsData = await groupsRes.json();
-
-  if (groupsData.success) {
-    const group = groupsData.data.find(
-      (g) => g.id === Number(groupId)
-    );
-
-    if (group) {
-      setGroupName(group.name);
-    }
-  }
-}
-
-    } catch (err) {
-      console.error("Error loading game:", err);
-    }
-  }
-
-  load();
-}, [gameId, groupId]);
+    load();
+  }, [gameId, groupId]);
 
   /* ============================================================
    INIT TIMER FROM DB (CRITICAL)
 ============================================================ */
-useEffect(() => {
-  if (!game) return;
+  useEffect(() => {
+    if (!game) return;
 
-  if (game.status === "active" && game.started_at) {
-    const startedAt = new Date(game.started_at).getTime();
-    const now = Date.now();
+    if (game.status === "active" && game.started_at) {
+      const startedAt = new Date(game.started_at).getTime();
+      const now = Date.now();
 
-    const seconds = Math.max(
-      0,
-      Math.floor((now - startedAt) / 1000)
-    );
+      const seconds = Math.max(0, Math.floor((now - startedAt) / 1000));
 
-    setElapsedTime(seconds);
-    setTimerRunning(true);
-  }
+      setElapsedTime(seconds);
+      setTimerRunning(true);
+    }
 
-  if (game.status === "finished" && game.duration_seconds != null) {
-    setElapsedTime(Math.floor(game.duration_seconds));
-    setTimerRunning(false);
-  }
-}, [game]);
-
-
+    if (game.status === "finished" && game.duration_seconds != null) {
+      setElapsedTime(Math.floor(game.duration_seconds));
+      setTimerRunning(false);
+    }
+  }, [game]);
 
   if (!game) {
     return (
@@ -474,69 +458,67 @@ useEffect(() => {
         <div className="game-card">
           <h1 className="title">GAME #{gameId}</h1>
 
-        <p className="subtitle">
-        {groupName || `Group #${groupId}`}
-        </p>
+          <p className="subtitle">{groupName || `Group #${groupId}`}</p>
 
           {game.status === "active" && (
             <div className="game-timer">{formatTime(elapsedTime)}</div>
           )}
 
-<div className="status-badges">
-  <div className={`status-badge status-${game.status}`}>
-    {game.status.toUpperCase()}
-  </div>
+          <div className="status-badges">
+            <div className={`status-badge status-${game.status}`}>
+              {game.status.toUpperCase()}
+            </div>
 
-  {gameLocked && game.status === "active" && (
-    <div className="status-badge status-finished">
-      FINAL RESULTS READY
-    </div>
-  )}
-</div>
+            {gameLocked && game.status === "active" && (
+              <div className="status-badge status-finished">
+                FINAL RESULTS READY
+              </div>
+            )}
+          </div>
 
+          {/* ⭐ PRIMARY ACTION – TOP */}
+          {gameLocked && game.status === "active" && (
+            <div className="top-action-bar">
+              <button
+                className="btn-primary end-btn"
+                onClick={async () => {
+                  const success = await saveResultsToServer(finalResults);
+                  if (!success) return;
 
-{/* ⭐ PRIMARY ACTION – TOP */}
-{gameLocked && game.status === "active" && (
-  <div className="top-action-bar">
-    <button
-      className="btn-primary end-btn"
-      onClick={async () => {
-        const success = await saveResultsToServer(finalResults);
-        if (!success) return;
+                  toast.success("Game finished & saved ✔️");
 
-        toast.success("Game finished & saved ✔️");
+                  setGame((prev) => ({
+                    ...prev,
+                    status: "finished",
+                    duration_seconds: elapsedTime,
+                  }));
 
-        setGame(prev => ({
-          ...prev,
-          status: "finished",
-          duration_seconds: elapsedTime
-        }));
-
-        setTimerRunning(false);
-        setFinalResultsModalOpen(true);
-      }}
-    >
-      Confirm & Close Game
-    </button>
-  </div>
-)}
+                  setTimerRunning(false);
+                  setFinalResultsModalOpen(true);
+                }}
+              >
+                Confirm & Close Game
+              </button>
+            </div>
+          )}
 
           {game.status === "pending" && (
-            <button className="btn-primary start-btn" onClick={() => updateStatus("active")}>
+            <button
+              className="btn-primary start-btn"
+              onClick={() => updateStatus("active")}
+            >
               Start Game
             </button>
           )}
 
-{game.status === "active" && !gameLocked && (
-  <button
-    className="btn-secondary end-btn"
-    onClick={() => setEndGameModalOpen(true)}
-  >
-    End Game
-  </button>
-)}
-
-
+          {game.status === "active" && !gameLocked && (
+            <button
+              className="btn-secondary end-btn"
+              onClick={() => setEndGameModalOpen(true)}
+            >
+              End Game
+            </button>
+          )}
 
           <h2 className="section-title">Players</h2>
 
@@ -554,23 +536,27 @@ useEffect(() => {
                     <span className="player-name">{p.username}</span>
                   </div>
 
-{game.status === "active" &&
-  !gameLocked &&
-  !gameLocked && (
-    <button
-      className={`rebuy-btn ${maxReached ? "maxed" : ""}`}
-      disabled={maxReached}
-      onClick={() => openRebuyModal(p.id)}
-    >
-      {maxReached ? "Maxed" : "+ Rebuy"}
-    </button>
-)}
-
+                  {game.status === "active" && !gameLocked && !gameLocked && (
+                    <button
+                      className={`rebuy-btn ${maxReached ? "maxed" : ""}`}
+                      disabled={maxReached}
+                      onClick={() => openRebuyModal(p.id)}
+                    >
+                      {maxReached ? "Maxed" : "+ Rebuy"}
+                    </button>
+                  )}
 
                   <div className="player-stats">
-                    <p><strong>Buy-in:</strong> {settings.buyIn} {settings.currency}</p>
-                    <p><strong>Rebuys:</strong> {rebuys}</p>
-                    <p><strong>Total Spent:</strong> {spent} {settings.currency}</p>
+                    <p>
+                      <strong>Buy-in:</strong> {settings.buyIn}{" "}
+                      {settings.currency}
+                    </p>
+                    <p>
+                      <strong>Rebuys:</strong> {rebuys}
+                    </p>
+                    <p>
+                      <strong>Total Spent:</strong> {spent} {settings.currency}
+                    </p>
                   </div>
                 </li>
               );
@@ -580,101 +566,130 @@ useEffect(() => {
           <h2 className="section-title">Game Summary</h2>
 
           <div className="settings-box">
-            <p><strong>Players:</strong> {players.length}</p>
-            <p><strong>Total Rebuys:</strong> {totalRebuys}</p>
-            <p><strong>Total Money in Table:</strong> {totalMoneyInTable} {settings.currency}</p>
+            <p>
+              <strong>Players:</strong> {players.length}
+            </p>
+            <p>
+              <strong>Total Rebuys:</strong> {totalRebuys}
+            </p>
+            <p>
+              <strong>Total Money in Table:</strong> {totalMoneyInTable}{" "}
+              {settings.currency}
+            </p>
 
-{finalResults && (
-  <>
-    <h2 className="section-title">Final Results</h2>
+            {finalResults && (
+              <>
+                <h2 className="section-title">Final Results</h2>
 
-    <div className="results-box">
-      <table className="results-table">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th>In</th>
-            <th>Out</th>
-            <th>Profit</th>
-          </tr>
-        </thead>
+                <div className="results-box">
+                  <table className="results-table">
+                    <thead>
+                      <tr>
+                        <th>Player</th>
+                        <th>In</th>
+                        <th>Out</th>
+                        <th>Profit</th>
+                      </tr>
+                    </thead>
 
-        <tbody>
-          {finalResults.map((r) => (
-            <tr key={r.userId}>
-              <td className="player-cell">{r.username}</td>
-              <td>{r.moneyIn} {settings.currency}</td>
-              <td>{r.moneyOut} {settings.currency}</td>
-              <td className={r.profit >= 0 ? "profit" : "loss"}>
-                {r.profit > 0 && "+"}
-                {r.profit} {settings.currency}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                    <tbody>
+                      {finalResults.map((r) => (
+                        <tr key={r.userId}>
+                          <td className="player-cell">{r.username}</td>
+                          <td>
+                            {r.moneyIn} {settings.currency}
+                          </td>
+                          <td>
+                            {r.moneyOut} {settings.currency}
+                          </td>
+                          <td className={r.profit >= 0 ? "profit" : "loss"}>
+                            {r.profit > 0 && "+"}
+                            {r.profit} {settings.currency}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
 
-
-  </>
-)}
-
-
-{game.status === "finished" && game.duration_seconds != null && (
-  <p>
-    <strong>Duration:</strong>{" "}
-    {formatTime(Math.floor(game.duration_seconds))}
-  </p>
-)}
-
+            {game.status === "finished" && game.duration_seconds != null && (
+              <p>
+                <strong>Duration:</strong>{" "}
+                {formatTime(Math.floor(game.duration_seconds))}
+              </p>
+            )}
           </div>
 
-<h2 className="section-title">Rebuy History</h2>
+          <h2 className="section-title">Rebuy History</h2>
 
-<div className="rebuy-history-box">
-  {rebuyHistory.length === 0 ? (
-    <p className="empty-text">No rebuys yet</p>
-  ) : (
-    <ul className="rebuy-history">
-      {rebuyHistory.map((r, index) => (
-        <li key={index} className="rebuy-item">
-          <div className="rebuy-main">
-            <span className="rebuy-user">{r.username}</span>
-            <span className="rebuy-amount">
-              +{r.amount} {settings.currency}
-            </span>
-          </div>
+          <div className="rebuy-history-box">
+            {rebuyHistory.length === 0 ? (
+              <p className="empty-text">No rebuys yet</p>
+            ) : (
+              <ul className="rebuy-history">
+                {rebuyHistory.map((r, index) => (
+                  <li key={index} className="rebuy-item">
+                    <div className="rebuy-main">
+                      <span className="rebuy-user">{r.username}</span>
+                      <span className="rebuy-amount">
+                        +{r.amount} {settings.currency}
+                      </span>
+                    </div>
 
-          <div className="rebuy-time">
-            ⏱ {formatTime(r.secondsFromStart)}
+                    <div className="rebuy-time">
+                      ⏱ {formatTime(r.secondsFromStart)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
 
           <h2 className="section-title">Game Settings</h2>
 
           <div className="settings-box">
-            <p><strong>Type:</strong> {settings.gameType}</p>
-            <p><strong>Currency:</strong> {settings.currency}</p>
-            <p><strong>Buy-In:</strong> {settings.buyIn}</p>
+            <p>
+              <strong>Type:</strong> {settings.gameType}
+            </p>
+            <p>
+              <strong>Currency:</strong> {settings.currency}
+            </p>
+            <p>
+              <strong>Buy-In:</strong> {settings.buyIn}
+            </p>
 
             {settings.gameType === "cash" && (
               <>
-                <p><strong>SB:</strong> {settings.cashSB}</p>
-                <p><strong>BB:</strong> {settings.cashBB}</p>
-                <p><strong>Rebuys Allowed:</strong> {settings.allowRebuy ? "Yes" : "No"}</p>
-                <p><strong>Max Rebuys:</strong> {settings.maxRebuysAllowed}</p>
+                <p>
+                  <strong>SB:</strong> {settings.cashSB}
+                </p>
+                <p>
+                  <strong>BB:</strong> {settings.cashBB}
+                </p>
+                <p>
+                  <strong>Rebuys Allowed:</strong>{" "}
+                  {settings.allowRebuy ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Max Rebuys:</strong> {settings.maxRebuysAllowed}
+                </p>
               </>
             )}
 
             {settings.gameType === "tournament" && (
               <>
-                <p><strong>Starting Chips:</strong> {settings.startingChips}</p>
-                <p><strong>Level Duration:</strong> {settings.levelDuration} min</p>
-                <p><strong>Blinds:</strong> {settings.startingSB}/{settings.startingBB}</p>
+                <p>
+                  <strong>Starting Chips:</strong> {settings.startingChips}
+                </p>
+                <p>
+                  <strong>Level Duration:</strong> {settings.levelDuration} min
+                </p>
+                <p>
+                  <strong>Blinds:</strong> {settings.startingSB}/
+                  {settings.startingBB}
+                </p>
               </>
             )}
 
@@ -708,22 +723,25 @@ useEffect(() => {
                   onChange={(e) =>
                     setRebuyModal((prev) => ({
                       ...prev,
-                      amount: Number(e.target.value)
+                      amount: Number(e.target.value),
                     }))
                   }
                 />
 
                 <p className="note-small">
-                  Allowed range: {settings.minRebuy} – {settings.maxRebuy} {settings.currency}
+                  Allowed range: {settings.minRebuy} – {settings.maxRebuy}{" "}
+                  {settings.currency}
                 </p>
               </>
             )}
 
             {settings.rebuyType === "percentage" && (
               <p>
-                Rebuy Amount: <strong>{rebuyModal.amount} {settings.currency}</strong>
-                <br />
-                ({settings.rebuyPercent}% of average stack)
+                Rebuy Amount:{" "}
+                <strong>
+                  {rebuyModal.amount} {settings.currency}
+                </strong>
+                <br />({settings.rebuyPercent}% of average stack)
               </p>
             )}
 
@@ -734,7 +752,9 @@ useEffect(() => {
 
               <button
                 className="btn-primary btn-gray"
-                onClick={() => setRebuyModal({ open: false, playerId: null, amount: 0 })}
+                onClick={() =>
+                  setRebuyModal({ open: false, playerId: null, amount: 0 })
+                }
               >
                 Cancel
               </button>
@@ -746,23 +766,23 @@ useEffect(() => {
       {/* ============================================================
     END GAME MODAL (STEP 1 – PLACEHOLDER)
 ============================================================ */}
-{endGameModalOpen && (
-  <EndGameModal
-    players={players}
-    currency={game.settings.currency}
-    onClose={() => setEndGameModalOpen(false)}
-    onConfirm={handleEndGameConfirm}
-  />
-)}
+      {endGameModalOpen && (
+        <EndGameModal
+          players={players}
+          currency={game.settings.currency}
+          onClose={() => setEndGameModalOpen(false)}
+          onConfirm={handleEndGameConfirm}
+        />
+      )}
 
-{finalResultsModalOpen && finalResults && (
-  <FinalResultsModal
-    results={finalResults}
-    currency={settings.currency}
-    duration={formatTime(elapsedTime)}
-    onClose={() => setFinalResultsModalOpen(false)}
-  />
-)}
+      {finalResultsModalOpen && finalResults && (
+        <FinalResultsModal
+          results={finalResults}
+          currency={settings.currency}
+          duration={formatTime(elapsedTime)}
+          onClose={() => setFinalResultsModalOpen(false)}
+        />
+      )}
     </>
   );
 }

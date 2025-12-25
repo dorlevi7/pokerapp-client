@@ -59,7 +59,6 @@ function ProfileScreen() {
 
       toast.success("Profile updated!");
       setEditOpen(false);
-
     } catch (error) {
       console.error("Error updating user:", error);
       toast.error("Server error. Please try again.");

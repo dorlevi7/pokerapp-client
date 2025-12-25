@@ -77,11 +77,9 @@ function NotificationsScreen() {
       });
 
       setNotifications((prev) =>
-        prev.map((n) =>
-          n.id === id ? { ...n, is_read: true } : n
-        )
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
-        toast.success("Notification marked as read");
+      toast.success("Notification marked as read");
     } catch (err) {
       console.error("❌ Failed to mark notification:", err);
       toast.error("Failed to update notification.");
@@ -101,9 +99,7 @@ function NotificationsScreen() {
         }
       );
 
-      setNotifications((prev) =>
-        prev.map((n) => ({ ...n, is_read: true }))
-      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
 
       toast.success("All notifications marked as read");
     } catch (err) {

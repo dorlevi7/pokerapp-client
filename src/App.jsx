@@ -1,8 +1,13 @@
 // src/App.js
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-import { Toaster } from "react-hot-toast";  // ⭐ NEW IMPORT
+import { Toaster } from "react-hot-toast"; // ⭐ NEW IMPORT
 
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
@@ -13,15 +18,14 @@ import MyGroups from "./screens/MyGroups";
 import GroupScreen from "./screens/GroupScreen";
 import NotificationsScreen from "./screens/NotificationsScreen"; // ⭐ NEW
 
-import GameSettingsScreen from "./screens/GameSettingsScreen"; 
-import GameScreen from "./screens/GameScreen";   // ⭐ NEW IMPORT
+import GameSettingsScreen from "./screens/GameSettingsScreen";
+import GameScreen from "./screens/GameScreen"; // ⭐ NEW IMPORT
 import GroupGamesScreen from "./screens/GroupGamesScreen";
 
 function App() {
   return (
     <Router>
       <div className="app-container">
-
         {/* ⭐ GLOBAL TOASTER — חובה */}
         <Toaster
           position="top-center"
@@ -51,12 +55,14 @@ function App() {
 
           <Route path="/notifications" element={<NotificationsScreen />} />
 
-          <Route path="/group/:groupId/settings" element={<GameSettingsScreen />} />
+          <Route
+            path="/group/:groupId/settings"
+            element={<GameSettingsScreen />}
+          />
 
           <Route path="/group/:groupId/game/:gameId" element={<GameScreen />} />
 
-<Route path="/group/:groupId/games" element={<GroupGamesScreen />} />
-
+          <Route path="/group/:groupId/games" element={<GroupGamesScreen />} />
         </Routes>
       </div>
     </Router>

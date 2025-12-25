@@ -84,122 +84,119 @@ function GameSettingsScreen() {
   /* ============================================================
      📌 Fetch Group Members
      ============================================================ */
-useEffect(() => {
-  const fetchMembers = async () => {
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/groups/${groupId}/members`
-      );
-      const data = await res.json();
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/api/groups/${groupId}/members`
+        );
+        const data = await res.json();
 
-      if (data.success) {
-        setMembers(data.data);
-        setSelectedPlayers(data.data.map((m) => m.id));
-      }
-    } catch (err) {
-      console.error("Error loading members:", err);
-    } finally {
-      // ⭐ זה סעיף 2 — סיום טעינה
-      setLoading(false);
-    }
-  };
-
-  fetchMembers();
-}, [groupId, API_BASE_URL]);
-
-  function togglePlayer(id) {
-    setSelectedPlayers((prev) =>
-      prev.includes(id)
-        ? prev.filter((p) => p !== id)
-        : [...prev, id]
-    );
-  }
-
-async function startGame() {
-  try {
-    // ✔ Read the stored user object (like in ProfileScreen)
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    const createdBy = storedUser?.id;
-
-    if (!createdBy) {
-    toast.error("User not logged in.");
-    return;
-    }
-
-    if (selectedPlayers.length === 0) {
-    toast.error("Please select at least one player.");
-    return;
-    }
-
-    const payload = {
-      groupId,
-      createdBy,
-      playerIds: selectedPlayers,
-
-      settings: {
-        gameType,
-        currency,
-        buyIn: gameType === "cash" ? buyIn : tournamentBuyIn,
-        cashSB,
-        cashBB,
-        allowRebuy,
-        rebuyType,
-        minRebuy,
-        maxRebuy,
-        rebuyPercent,
-        maxRebuysAllowed,
-        startingChips,
-        levelDuration,
-        startingSB,
-        startingBB,
-        enableLateReg,
-        lateRegType,
-        lateRegMinutes,
-        lateRegLevel,
-        allowStraddle,
-        allowRunItTwice,
-        notes
+        if (data.success) {
+          setMembers(data.data);
+          setSelectedPlayers(data.data.map((m) => m.id));
+        }
+      } catch (err) {
+        console.error("Error loading members:", err);
+      } finally {
+        // ⭐ זה סעיף 2 — סיום טעינה
+        setLoading(false);
       }
     };
 
-    const res = await fetch(`${API_BASE_URL}/api/games/create`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    fetchMembers();
+  }, [groupId, API_BASE_URL]);
 
-    const data = await res.json();
+  function togglePlayer(id) {
+    setSelectedPlayers((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
+  }
 
-    if (!data.success) {
+  async function startGame() {
+    try {
+      // ✔ Read the stored user object (like in ProfileScreen)
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+
+      const createdBy = storedUser?.id;
+
+      if (!createdBy) {
+        toast.error("User not logged in.");
+        return;
+      }
+
+      if (selectedPlayers.length === 0) {
+        toast.error("Please select at least one player.");
+        return;
+      }
+
+      const payload = {
+        groupId,
+        createdBy,
+        playerIds: selectedPlayers,
+
+        settings: {
+          gameType,
+          currency,
+          buyIn: gameType === "cash" ? buyIn : tournamentBuyIn,
+          cashSB,
+          cashBB,
+          allowRebuy,
+          rebuyType,
+          minRebuy,
+          maxRebuy,
+          rebuyPercent,
+          maxRebuysAllowed,
+          startingChips,
+          levelDuration,
+          startingSB,
+          startingBB,
+          enableLateReg,
+          lateRegType,
+          lateRegMinutes,
+          lateRegLevel,
+          allowStraddle,
+          allowRunItTwice,
+          notes,
+        },
+      };
+
+      const res = await fetch(`${API_BASE_URL}/api/games/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
         toast.error(data.error || "Failed to create game.");
         return;
-    }
+      }
 
-    const gameId = data.data.gameId;
+      const gameId = data.data.gameId;
 
-    toast.success("Game created successfully!");
+      toast.success("Game created successfully!");
 
-    navigate(`/group/${groupId}/game/${gameId}`);
-
+      navigate(`/group/${groupId}/game/${gameId}`);
     } catch (err) {
-    console.error("Error starting game:", err);
-    toast.error("Server error while creating game.");
+      console.error("Error starting game:", err);
+      toast.error("Server error while creating game.");
     }
-}
+  }
 
   /* ============================================================
      📌 JSX RETURN
      ============================================================ */
 
-     if (loading) {
-  return (
-    <>
-      <NavBar />
-      <Loader />
-    </>
-  );
-}
+  if (loading) {
+    return (
+      <>
+        <NavBar />
+        <Loader />
+      </>
+    );
+  }
 
   return (
     <>
@@ -233,31 +230,31 @@ async function startGame() {
               GAME TYPE
               ====================================================== */}
           <AccordionSection title="Game Type">
-              <div className="player-item">
-                <label className="checkbox-row">
-                  <input
-                    type="radio"
-                    name="gameType"
-                    value="cash"
-                    checked={gameType === "cash"}
-                    onChange={() => setGameType("cash")}
-                  />
-                  Cash Game
-                </label>
-              </div>
+            <div className="player-item">
+              <label className="checkbox-row">
+                <input
+                  type="radio"
+                  name="gameType"
+                  value="cash"
+                  checked={gameType === "cash"}
+                  onChange={() => setGameType("cash")}
+                />
+                Cash Game
+              </label>
+            </div>
 
-              <div className="player-item">
-                <label className="checkbox-row">
-                  <input
-                    type="radio"
-                    name="gameType"
-                    value="tournament"
-                    checked={gameType === "tournament"}
-                    onChange={() => setGameType("tournament")}
-                  />
-                  Tournament
-                </label>
-              </div>
+            <div className="player-item">
+              <label className="checkbox-row">
+                <input
+                  type="radio"
+                  name="gameType"
+                  value="tournament"
+                  checked={gameType === "tournament"}
+                  onChange={() => setGameType("tournament")}
+                />
+                Tournament
+              </label>
+            </div>
           </AccordionSection>
 
           {/* ======================================================
@@ -346,9 +343,7 @@ async function startGame() {
                           type="number"
                           className="input"
                           value={minRebuy}
-                          onChange={(e) =>
-                            setMinRebuy(Number(e.target.value))
-                          }
+                          onChange={(e) => setMinRebuy(Number(e.target.value))}
                         />
                       </div>
 
@@ -360,14 +355,14 @@ async function startGame() {
                           type="number"
                           className="input"
                           value={maxRebuy}
-                          onChange={(e) =>
-                            setMaxRebuy(Number(e.target.value))
-                          }
+                          onChange={(e) => setMaxRebuy(Number(e.target.value))}
                         />
                       </div>
 
                       <div className="field">
-                        <label className="field-label">Max Rebuys Allowed</label>
+                        <label className="field-label">
+                          Max Rebuys Allowed
+                        </label>
                         <input
                           type="number"
                           className="input"
@@ -411,9 +406,7 @@ async function startGame() {
                   type="number"
                   className="input"
                   value={startingChips}
-                  onChange={(e) =>
-                    setStartingChips(Number(e.target.value))
-                  }
+                  onChange={(e) => setStartingChips(Number(e.target.value))}
                 />
               </div>
 
@@ -423,9 +416,7 @@ async function startGame() {
                   type="number"
                   className="input"
                   value={levelDuration}
-                  onChange={(e) =>
-                    setLevelDuration(Number(e.target.value))
-                  }
+                  onChange={(e) => setLevelDuration(Number(e.target.value))}
                 />
               </div>
 
@@ -514,9 +505,7 @@ async function startGame() {
               ====================================================== */}
           <AccordionSection title="Buy-In">
             <div className="field">
-              <label className="field-label">
-                Buy-in Amount ({currency})
-              </label>
+              <label className="field-label">Buy-in Amount ({currency})</label>
               <input
                 type="number"
                 className="input"

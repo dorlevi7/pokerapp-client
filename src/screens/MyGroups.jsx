@@ -100,8 +100,7 @@ function MyGroups() {
 
                     {!g.owner_username && g.owner_first_name && (
                       <small className="group-owner">
-                        (Owner: {g.owner_first_name}{" "}
-                        {g.owner_last_name || ""})
+                        (Owner: {g.owner_first_name} {g.owner_last_name || ""})
                       </small>
                     )}
                   </div>

@@ -53,17 +53,13 @@ function GroupScreen() {
         const groupsData = await groupsRes.json();
 
         if (groupsRes.ok && groupsData.success) {
-          const found = groupsData.data.find(
-            (g) => g.id === parseInt(groupId)
-          );
+          const found = groupsData.data.find((g) => g.id === parseInt(groupId));
 
           if (found) {
             setGroupName(found.name);
             setOwnerId(found.owner_id);
 
-            const owner = membersData.data.find(
-              (m) => m.id === found.owner_id
-            );
+            const owner = membersData.data.find((m) => m.id === found.owner_id);
 
             if (owner) {
               setOwnerName(owner.username);
@@ -129,12 +125,12 @@ function GroupScreen() {
             Configure Game
           </button>
 
-<button
-  className="btn-secondary"
-  onClick={() => navigate(`/group/${groupId}/games`)}
->
-  📊 View Games History
-</button>
+          <button
+            className="btn-secondary"
+            onClick={() => navigate(`/group/${groupId}/games`)}
+          >
+            📊 View Games History
+          </button>
 
           <button
             className="btn-secondary back-btn"

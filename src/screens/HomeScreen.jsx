@@ -38,7 +38,8 @@ function HomeScreen() {
         <div className="card home-card">
           <h1 className="title">Welcome, {user.first_name} 👋</h1>
           <p className="subtitle">
-            Manage your poker sessions, track your results, and connect with friends.
+            Manage your poker sessions, track your results, and connect with
+            friends.
           </p>
 
           <div className="home-actions">

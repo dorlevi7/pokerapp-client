@@ -16,30 +16,30 @@ function NavBar() {
       : "https://pokerapp-server.onrender.com";
 
   // ⭐ Fetch unread notifications count
-useEffect(() => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user) return;
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
 
-async function loadUnread() {
-  try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/notifications/user/${user.id}`
-    );
-    const data = await res.json();
+    async function loadUnread() {
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/api/notifications/user/${user.id}`
+        );
+        const data = await res.json();
 
-    if (data.success) {
-      const unread = data.data.filter((n) => !n.is_read).length;
-      setUnreadCount(unread);
+        if (data.success) {
+          const unread = data.data.filter((n) => !n.is_read).length;
+          setUnreadCount(unread);
+        }
+      } catch (err) {
+        console.error("❌ Failed to load unread count:", err);
+      } finally {
+        setLoadingUnread(false); // ⭐ חשוב
+      }
     }
-  } catch (err) {
-    console.error("❌ Failed to load unread count:", err);
-  } finally {
-    setLoadingUnread(false); // ⭐ חשוב
-  }
-}
 
-  loadUnread();
-}, [location.pathname]);
+    loadUnread();
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -50,14 +50,10 @@ async function loadUnread() {
     <>
       {/* ⭐ OVERLAY BEHIND MENU WHEN OPEN */}
       {menuOpen && (
-        <div
-          className="menu-overlay"
-          onClick={() => setMenuOpen(false)}
-        ></div>
+        <div className="menu-overlay" onClick={() => setMenuOpen(false)}></div>
       )}
 
       <nav className="navbar">
-
         {/* LOGO */}
         <div className="navbar-logo" onClick={() => navigate("/home")}>
           🃏 PokerApp
@@ -66,7 +62,9 @@ async function loadUnread() {
         {/* DESKTOP MENU */}
         <div className="navbar-links">
           <button
-            className={`nav-btn ${location.pathname === "/home" ? "active" : ""}`}
+            className={`nav-btn ${
+              location.pathname === "/home" ? "active" : ""
+            }`}
             onClick={() => navigate("/home")}
           >
             Home
@@ -83,14 +81,15 @@ async function loadUnread() {
               Notifications
             </button>
 
-          {!loadingUnread && unreadCount > 0 && (
-            <span className="notif-badge">{unreadCount}</span>
-          )}
-
+            {!loadingUnread && unreadCount > 0 && (
+              <span className="notif-badge">{unreadCount}</span>
+            )}
           </div>
 
           <button
-            className={`nav-btn ${location.pathname === "/profile" ? "active" : ""}`}
+            className={`nav-btn ${
+              location.pathname === "/profile" ? "active" : ""
+            }`}
             onClick={() => navigate("/profile")}
           >
             Profile
@@ -109,7 +108,9 @@ async function loadUnread() {
         {/* MOBILE MENU */}
         <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <button
-            className={`mobile-item ${location.pathname === "/home" ? "active" : ""}`}
+            className={`mobile-item ${
+              location.pathname === "/home" ? "active" : ""
+            }`}
             onClick={() => {
               navigate("/home");
               setMenuOpen(false);
@@ -131,7 +132,6 @@ async function loadUnread() {
             {!loadingUnread && unreadCount > 0 && (
               <span className="notif-badge mobile-badge">{unreadCount}</span>
             )}
-
           </button>
 
           <button

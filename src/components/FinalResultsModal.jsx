@@ -21,8 +21,12 @@ function FinalResultsModal({ results, currency, duration, onClose }) {
             {results.map((r) => (
               <tr key={r.userId}>
                 <td>{r.username}</td>
-                <td>{r.moneyIn} {currency}</td>
-                <td>{r.moneyOut} {currency}</td>
+                <td>
+                  {r.moneyIn} {currency}
+                </td>
+                <td>
+                  {r.moneyOut} {currency}
+                </td>
                 <td className={r.profit >= 0 ? "profit" : "loss"}>
                   {r.profit > 0 && "+"}
                   {r.profit} {currency}
@@ -40,18 +44,12 @@ function FinalResultsModal({ results, currency, duration, onClose }) {
 
         <div className="modal-buttons">
           {/* 🔙 חזרה למסך המשחק */}
-          <button
-            className="btn-primary btn-blue"
-            onClick={onClose}
-          >
+          <button className="btn-primary btn-blue" onClick={onClose}>
             Back to Game
           </button>
 
           {/* 🏠 מעבר לבית */}
-          <button
-            className="btn-primary"
-            onClick={() => navigate("/home")}
-          >
+          <button className="btn-primary" onClick={() => navigate("/home")}>
             Go to Home
           </button>
         </div>

@@ -18,15 +18,15 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async () => {
-  try {
-    setIsSaving(true);
-    await onSave(form); // onSave צריך להחזיר Promise
-    onClose();
-  } finally {
-    setIsSaving(false);
-  }
-};
+  const handleSubmit = async () => {
+    try {
+      setIsSaving(true);
+      await onSave(form); // onSave צריך להחזיר Promise
+      onClose();
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <>
@@ -92,23 +92,21 @@ const handleSubmit = async () => {
         </div>
 
         <div className="modal-actions">
-        <button
-          className="modal-btn cancel"
-          onClick={onClose}
-          disabled={isSaving}
-        >
-          Cancel
-        </button>
+          <button
+            className="modal-btn cancel"
+            onClick={onClose}
+            disabled={isSaving}
+          >
+            Cancel
+          </button>
 
-
-        <button
-          className="modal-btn save"
-          onClick={handleSubmit}
-          disabled={isSaving}
-        >
-          {isSaving ? "Saving..." : "Save Changes"}
-        </button>
-
+          <button
+            className="modal-btn save"
+            onClick={handleSubmit}
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
         </div>
       </div>
     </>

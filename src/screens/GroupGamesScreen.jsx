@@ -24,9 +24,7 @@ function GroupGamesScreen() {
     async function loadData() {
       try {
         /* ------------------ 1️⃣ Load games ------------------ */
-        const res = await fetch(
-          `${API_BASE_URL}/api/groups/${groupId}/games`
-        );
+        const res = await fetch(`${API_BASE_URL}/api/groups/${groupId}/games`);
         const data = await res.json();
 
         if (data.success) {
@@ -91,9 +89,7 @@ function GroupGamesScreen() {
         <div className="card group-card">
           <h1 className="title">Games History</h1>
 
-          <p className="subtitle">
-            {groupName || `Group #${groupId}`}
-          </p>
+          <p className="subtitle">{groupName || `Group #${groupId}`}</p>
 
           {games.length === 0 ? (
             <p className="empty-text">No games found for this group.</p>
@@ -101,9 +97,9 @@ function GroupGamesScreen() {
             <ul className="member-list">
               {games.map((game) => (
                 <li
-  key={game.id}
-  className={`member-item game-item game-${game.status}`}
->
+                  key={game.id}
+                  className={`member-item game-item game-${game.status}`}
+                >
                   <div>
                     <strong>Game #{game.game_number}</strong>
                   </div>

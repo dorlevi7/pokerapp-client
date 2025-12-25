@@ -4,16 +4,16 @@ import { toast } from "react-hot-toast";
 function EndGameModal({ players, currency, onClose, onConfirm }) {
   const [finalStacks, setFinalStacks] = useState(() => {
     const initial = {};
-    players.forEach(p => {
+    players.forEach((p) => {
       initial[p.id] = "";
     });
     return initial;
   });
 
   function handleChange(playerId, value) {
-    setFinalStacks(prev => ({
+    setFinalStacks((prev) => ({
       ...prev,
-      [playerId]: value
+      [playerId]: value,
     }));
   }
 
@@ -39,7 +39,7 @@ function EndGameModal({ players, currency, onClose, onConfirm }) {
         <h3>End Game – Final Chips</h3>
 
         <div className="endgame-list">
-          {players.map(p => (
+          {players.map((p) => (
             <div key={p.id} className="endgame-row">
               <span className="endgame-name">{p.username}</span>
 
@@ -48,7 +48,7 @@ function EndGameModal({ players, currency, onClose, onConfirm }) {
                 className="input"
                 placeholder="Final chips"
                 value={finalStacks[p.id]}
-                onChange={e => handleChange(p.id, e.target.value)}
+                onChange={(e) => handleChange(p.id, e.target.value)}
               />
             </div>
           ))}

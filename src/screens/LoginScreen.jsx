@@ -90,7 +90,11 @@ function LoginScreen() {
             required
           />
 
-          <button type="submit" className="btn-primary login-btn" disabled={loading}>
+          <button
+            type="submit"
+            className="btn-primary login-btn"
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>

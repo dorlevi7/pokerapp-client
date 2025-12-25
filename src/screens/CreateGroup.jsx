@@ -214,7 +214,7 @@ function CreateGroup() {
             {isSubmitting ? "Creating..." : "Create Group"}
           </button>
 
-                    <button
+          <button
             className="btn-secondary back-btn"
             onClick={() => navigate("/home")}
           >
