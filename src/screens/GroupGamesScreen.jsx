@@ -105,7 +105,7 @@ function GroupGamesScreen() {
   className={`member-item game-item game-${game.status}`}
 >
                   <div>
-                    <strong>Game #{game.id}</strong>
+                    <strong>Game #{game.game_number}</strong>
                   </div>
 
                   <div>
