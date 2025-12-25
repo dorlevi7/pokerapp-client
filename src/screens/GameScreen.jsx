@@ -130,30 +130,53 @@ function GameScreen() {
   /* ============================================================
      CONFIRM REBUY
   ============================================================ */
-  function confirmRebuy() {
-    const { playerId, amount } = rebuyModal;
-    const settings = game.settings;
+async function confirmRebuy() {
+  const { playerId, amount } = rebuyModal;
+  const settings = game.settings;
 
-    // Validate range
-    if (settings.rebuyType === "range") {
-      const min = Number(settings.minRebuy);
-      const max = Number(settings.maxRebuy);
+  // ✅ Validate range
+  if (settings.rebuyType === "range") {
+    const min = Number(settings.minRebuy);
+    const max = Number(settings.maxRebuy);
 
-      if (amount < min || amount > max) {
-        toast.error(`Rebuy must be between ${min} and ${max} ${settings.currency}`); // ⭐
-        return;
-      }
+    if (amount < min || amount > max) {
+      toast.error(
+        `Rebuy must be between ${min} and ${max} ${settings.currency}`
+      );
+      return;
     }
+  }
 
-    const current = rebuyCounts[playerId] || 0;
-    const maxRebuys = Number(settings.maxRebuysAllowed);
+  const current = rebuyCounts[playerId] || 0;
+  const maxRebuys = Number(settings.maxRebuysAllowed);
 
-    if (maxRebuys > 0 && current >= maxRebuys) {
-      toast.error("Maximum number of rebuys reached."); // ⭐
+  if (maxRebuys > 0 && current >= maxRebuys) {
+    toast.error("Maximum number of rebuys reached.");
+    return;
+  }
+
+  try {
+    // 🔥 שליחה לשרת
+    const res = await fetch(
+      `${API_BASE_URL}/api/games/${gameId}/rebuy`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: playerId,
+          amount
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!data.success) {
+      toast.error(data.error || "Failed to save rebuy");
       return;
     }
 
-    // Apply rebuy
+    // ✅ עדכון state מקומי רק אחרי הצלחה
     setRebuyCounts((prev) => ({
       ...prev,
       [playerId]: (prev[playerId] || 0) + 1
@@ -164,10 +187,14 @@ function GameScreen() {
       [playerId]: (prev[playerId] || 0) + amount
     }));
 
-    toast.success("Rebuy added!"); // ⭐ Nice feedback
+    toast.success("Rebuy saved 💰");
 
     setRebuyModal({ open: false, playerId: null, amount: 0 });
+  } catch (err) {
+    console.error("Rebuy error:", err);
+    toast.error("Server error while saving rebuy");
   }
+}
 
   /* ============================================================
      CALCULATE AVERAGE STACK
