@@ -492,3 +492,71 @@
 .subtitle {
     text-align: center;
 }
+
+/* ================================
+   Final Results Table
+================================ */
+
+.results-box {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    overflow-x: auto;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #e5e7eb;
+}
+
+/* Header */
+.results-table thead th {
+    text-align: left;
+    padding: 10px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5f5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Rows */
+.results-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.results-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Cells */
+.results-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+/* Player column */
+.player-cell {
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+/* Profit coloring */
+.profit {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+.loss {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+/* Remove border from last row */
+.results-table tbody tr:last-child td {
+    border-bottom: none;
+}

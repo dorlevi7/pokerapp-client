@@ -5,6 +5,8 @@ import "../styles/GameScreen.css";
 import { toast } from "react-hot-toast"; // ⭐ NEW
 import Loader from "../components/Loader";
 
+import EndGameModal from "../components/EndGameModal";
+
 function GameScreen() {
   const { groupId, gameId } = useParams();
 
@@ -17,6 +19,12 @@ function GameScreen() {
 
   // 🆕 Group name
 const [groupName, setGroupName] = useState("");
+
+// 🟥 End game modal
+const [endGameModalOpen, setEndGameModalOpen] = useState(false);
+
+// 🟩 Final game results (after End Game)
+const [finalResults, setFinalResults] = useState(null);
 
   // 🟦 Rebuy modal state
   const [rebuyModal, setRebuyModal] = useState({
@@ -209,6 +217,57 @@ setRebuyHistory(prev => [
   }
 }
 
+/* ============================================================
+   END GAME CONFIRM HANDLER (STEP 2)
+============================================================ */
+function handleEndGameConfirm(finalStacks) {
+  // 🔹 1. Sum final stacks
+  const totalFinalChips = Object.values(finalStacks).reduce(
+    (sum, chips) => sum + Number(chips),
+    0
+  );
+
+  const expectedTotal = totalMoneyInTable;
+
+  if (totalFinalChips !== expectedTotal) {
+    toast.error(
+      `Chip mismatch ❌  
+Entered: ${totalFinalChips} ${game.settings.currency}  
+Expected: ${expectedTotal} ${game.settings.currency}`
+    );
+    return;
+  }
+
+  // 🔹 2. Calculate results per player
+  const results = players.map((player) => {
+    const rebuys = rebuyAmounts[player.id] || 0;
+    const moneyIn = game.settings.buyIn + rebuys;
+    const moneyOut = Number(finalStacks[player.id] || 0);
+
+    return {
+      userId: player.id,
+      username: player.username,
+      moneyIn,
+      moneyOut,
+      profit: moneyOut - moneyIn
+    };
+  });
+
+  setFinalResults(results);
+
+  toast.success("Final stacks validated & results calculated ✔️");
+
+  // 🧠 בשלב הזה:
+  // results = מוכן ל־DB / סיכום / גרפים
+
+  // ⛔ עדיין לא סוגרים משחק
+  setEndGameModalOpen(false);
+
+  // TODO (שלב הבא):
+  // saveResultsToServer(results)
+  // updateStatus("finished")
+}
+
   /* ============================================================
      CALCULATE AVERAGE STACK
   ============================================================ */
@@ -396,11 +455,15 @@ useEffect(() => {
             </button>
           )}
 
-          {game.status === "active" && (
-            <button className="btn-secondary end-btn" onClick={() => updateStatus("finished")}>
-              End Game
-            </button>
-          )}
+{game.status === "active" && (
+  <button
+    className="btn-secondary end-btn"
+    onClick={() => setEndGameModalOpen(true)}
+  >
+    End Game
+  </button>
+)}
+
 
           <h2 className="section-title">Players</h2>
 
@@ -446,7 +509,40 @@ useEffect(() => {
             <p><strong>Players:</strong> {players.length}</p>
             <p><strong>Total Rebuys:</strong> {totalRebuys}</p>
             <p><strong>Total Money in Table:</strong> {totalMoneyInTable} {settings.currency}</p>
-            <p><strong>Buy-In:</strong> {settings.buyIn} {settings.currency}</p>
+
+{finalResults && (
+  <>
+    <h2 className="section-title">Final Results</h2>
+
+    <div className="results-box">
+      <table className="results-table">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>In</th>
+            <th>Out</th>
+            <th>Profit</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {finalResults.map((r) => (
+            <tr key={r.userId}>
+              <td className="player-cell">{r.username}</td>
+              <td>{r.moneyIn} {settings.currency}</td>
+              <td>{r.moneyOut} {settings.currency}</td>
+              <td className={r.profit >= 0 ? "profit" : "loss"}>
+                {r.profit > 0 && "+"}
+                {r.profit} {settings.currency}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>
+)}
+
 
 {game.status === "finished" && game.duration_seconds != null && (
   <p>
@@ -570,6 +666,20 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+      {/* ============================================================
+    END GAME MODAL (STEP 1 – PLACEHOLDER)
+============================================================ */}
+{endGameModalOpen && (
+  <EndGameModal
+    players={players}
+    currency={game.settings.currency}
+    onClose={() => setEndGameModalOpen(false)}
+    onConfirm={handleEndGameConfirm}
+  />
+)}
+
+
     </>
   );
 }
