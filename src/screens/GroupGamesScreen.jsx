@@ -29,7 +29,6 @@ function GroupGamesScreen() {
 
         if (data.success) {
           setGames(data.data);
-          console.log("🎮 Group games:", data.data);
         }
       } catch (err) {
         console.error("❌ Error loading group games:", err);

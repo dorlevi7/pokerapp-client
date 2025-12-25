@@ -178,6 +178,19 @@ async function confirmRebuy() {
       toast.error(data.error || "Failed to save rebuy");
       return;
     }
+    
+    // 🔥 REALTIME UPDATE — add rebuy event to history
+setRebuyHistory(prev => [
+  ...prev,
+  {
+    id: data.data.id,
+    username:
+      players.find(p => p.id === playerId)?.username || "Player",
+    amount,
+    secondsFromStart: elapsedTime
+  }
+]);
+
 
     // ✅ עדכון state מקומי רק אחרי הצלחה
     setRebuyCounts((prev) => ({
