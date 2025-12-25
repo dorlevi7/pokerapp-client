@@ -129,6 +129,13 @@ function GroupScreen() {
             Configure Game
           </button>
 
+<button
+  className="btn-secondary"
+  onClick={() => navigate(`/group/${groupId}/games`)}
+>
+  📊 View Games History
+</button>
+
           <button
             className="btn-secondary back-btn"
             onClick={() => navigate("/my-groups")}
