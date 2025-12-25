@@ -208,23 +208,37 @@ async function confirmRebuy() {
   /* ============================================================
      LOAD GAME
   ============================================================ */
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/games/${gameId}`);
-        const data = await res.json();
+useEffect(() => {
+  async function load() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/games/${gameId}`);
+      const data = await res.json();
 
-        if (data.success) {
-          setGame(data.data.game);
-          setPlayers(data.data.players);
-        }
-      } catch (err) {
-        console.error("Error loading game:", err);
+      if (data.success) {
+        setGame(data.data.game);
+        setPlayers(data.data.players);
+
+        /* ============================================
+           🔥 INIT REBUYS FROM DB
+        ============================================ */
+        const counts = {};
+        const amounts = {};
+
+        (data.data.rebuys || []).forEach((r) => {
+        counts[r.user_id] = Number(r.count);
+        amounts[r.user_id] = Number(r.total);
+        });
+
+        setRebuyCounts(counts);
+        setRebuyAmounts(amounts);
       }
+    } catch (err) {
+      console.error("Error loading game:", err);
     }
+  }
 
-    load();
-  }, [gameId]);
+  load();
+}, [gameId]);
 
   if (!game) {
     return (
