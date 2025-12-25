@@ -39,7 +39,8 @@
 .player-input-row {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* Small button */
@@ -52,7 +53,6 @@
 
 /* Player List */
 .players-list {
-    margin-top: 20px;
     list-style: none;
     padding: 0;
 }
@@ -61,7 +61,6 @@
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 10px 14px;
-    margin-bottom: 8px;
     border-radius: 10px;
 
     display: flex;
@@ -69,6 +68,7 @@
     align-items: center;
 
     color: #f3f4f6;
+
 }
 
 /* Remove button */
