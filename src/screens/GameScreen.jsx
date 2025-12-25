@@ -268,22 +268,50 @@ useEffect(() => {
    INIT TIMER FROM DB (CRITICAL)
 ============================================================ */
 useEffect(() => {
-  if (!game) return;
+  console.log("🟡 useEffect(game) fired");
+  console.log("game:", game);
+
+  if (!game) {
+    console.log("⛔ game is null/undefined");
+    return;
+  }
+
+  console.log("status:", game.status);
+  console.log("started_at (raw):", game.started_at);
+  console.log("typeof started_at:", typeof game.started_at);
 
   if (game.status === "active" && game.started_at) {
-const startedAt =
-  new Date(game.started_at).getTime() -
-  new Date().getTimezoneOffset() * 60 * 1000;
+    const dateObj = new Date(game.started_at);
+
+    console.log("Date object:", dateObj);
+    console.log("Date is valid:", !isNaN(dateObj.getTime()));
+
+    const startedAt = dateObj.getTime();
     const now = Date.now();
-    const seconds = Math.floor((now - startedAt) / 1000);
+
+    console.log("startedAt (ms):", startedAt);
+    console.log("now (ms):", now);
+    console.log("diff (ms):", now - startedAt);
+
+    const seconds = Math.max(
+      0,
+      Math.floor((now - startedAt) / 1000)
+    );
+
+    console.log("elapsed seconds:", seconds);
 
     setElapsedTime(seconds);
     setTimerRunning(true);
   }
 
-  if (game.status === "finished" && game.duration_seconds != null) {
-    setElapsedTime(Math.floor(game.duration_seconds));
-    setTimerRunning(false);
+  if (game.status === "finished") {
+    console.log("duration_seconds:", game.duration_seconds);
+    console.log("typeof duration_seconds:", typeof game.duration_seconds);
+
+    if (game.duration_seconds != null) {
+      setElapsedTime(Math.floor(game.duration_seconds));
+      setTimerRunning(false);
+    }
   }
 }, [game]);
 
