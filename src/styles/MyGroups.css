@@ -61,8 +61,7 @@
 
 /* Group info (name + owner) */
 .group-info {
-    margin-bottom: 10px;
-    /* ⭐ רווח לפני כפתור View */
+    margin-bottom: 0px;
 }
 
 .group-name {
