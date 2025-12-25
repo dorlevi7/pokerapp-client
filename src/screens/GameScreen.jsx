@@ -487,12 +487,13 @@ useEffect(() => {
     {game.status.toUpperCase()}
   </div>
 
-  {gameLocked && (
+  {gameLocked && game.status === "active" && (
     <div className="status-badge status-finished">
       FINAL RESULTS READY
     </div>
   )}
 </div>
+
 
 {/* ⭐ PRIMARY ACTION – TOP */}
 {gameLocked && game.status === "active" && (
@@ -762,9 +763,6 @@ useEffect(() => {
     onClose={() => setFinalResultsModalOpen(false)}
   />
 )}
-
-
-
     </>
   );
 }
