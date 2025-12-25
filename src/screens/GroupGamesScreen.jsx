@@ -55,13 +55,6 @@ function GroupGamesScreen() {
   /* ============================================================
      RENDER
   ============================================================ */
-  function toIsraelDate(dateString) {
-  const date = new Date(dateString);
-  return new Date(
-    date.getTime() - date.getTimezoneOffset() * 60 * 1000
-  );
-  }
-
   return (
     <>
       <NavBar />
@@ -86,13 +79,14 @@ function GroupGamesScreen() {
                     Type: {game.game_type} | Status: {game.status}
                   </div>
 
-                  <div>
-                    Created at:{" "}
-                    {toIsraelDate(game.created_at).toLocaleString("he-IL", {
-                        dateStyle: "short",
-                        timeStyle: "short"
-                        })}
-                  </div>
+<div>
+  Created at:{" "}
+  {new Date(game.created_at).toLocaleString("he-IL", {
+    dateStyle: "short",
+    timeStyle: "short"
+  })}
+</div>
+
 
                   <button
                     className="btn-primary"
