@@ -759,8 +759,10 @@ useEffect(() => {
     results={finalResults}
     currency={settings.currency}
     duration={formatTime(elapsedTime)}
+    onClose={() => setFinalResultsModalOpen(false)}
   />
 )}
+
 
 
     </>

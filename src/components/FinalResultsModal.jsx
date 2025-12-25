@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function FinalResultsModal({ results, currency, duration }) {
+function FinalResultsModal({ results, currency, duration, onClose }) {
   const navigate = useNavigate();
 
   return (
@@ -39,6 +39,15 @@ function FinalResultsModal({ results, currency, duration }) {
         )}
 
         <div className="modal-buttons">
+          {/* 🔙 חזרה למסך המשחק */}
+          <button
+            className="btn-primary btn-blue"
+            onClick={onClose}
+          >
+            Back to Game
+          </button>
+
+          {/* 🏠 מעבר לבית */}
           <button
             className="btn-primary"
             onClick={() => navigate("/home")}
