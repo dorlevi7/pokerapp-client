@@ -15,6 +15,9 @@ function GameScreen() {
   const [rebuyCounts, setRebuyCounts] = useState({});
   const [rebuyAmounts, setRebuyAmounts] = useState({});
 
+  // 🆕 Group name
+const [groupName, setGroupName] = useState("");
+
   // 🟦 Rebuy modal state
   const [rebuyModal, setRebuyModal] = useState({
     open: false,
@@ -247,14 +250,41 @@ useEffect(() => {
       );
       const historyData = await historyRes.json();
 
-    if (historyData.success) {
-    setRebuyHistory(
-        historyData.data.map(r => ({
-        ...r,
-        secondsFromStart: Number(r.seconds_from_start)
-        }))
-    );
+      if (historyData.success) {
+        setRebuyHistory(
+          historyData.data.map((r) => ({
+            ...r,
+            secondsFromStart: Number(r.seconds_from_start)
+          }))
+        );
+      }
+
+// 🔹 3. Group name (FIXED)
+const user = JSON.parse(localStorage.getItem("user"));
+const userId = user?.id;
+
+if (userId) {
+  const groupsRes = await fetch(
+    `${API_BASE_URL}/api/groups/my-groups`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId })
     }
+  );
+
+  const groupsData = await groupsRes.json();
+
+  if (groupsData.success) {
+    const group = groupsData.data.find(
+      (g) => g.id === Number(groupId)
+    );
+
+    if (group) {
+      setGroupName(group.name);
+    }
+  }
+}
 
     } catch (err) {
       console.error("Error loading game:", err);
@@ -262,7 +292,7 @@ useEffect(() => {
   }
 
   load();
-}, [gameId]);
+}, [gameId, groupId]);
 
   /* ============================================================
    INIT TIMER FROM DB (CRITICAL)
@@ -347,6 +377,10 @@ useEffect(() => {
       <div className="game-screen-container">
         <div className="game-card">
           <h1 className="title">GAME #{gameId}</h1>
+
+        <p className="subtitle">
+        {groupName || `Group #${groupId}`}
+        </p>
 
           {game.status === "active" && (
             <div className="game-timer">{formatTime(elapsedTime)}</div>
