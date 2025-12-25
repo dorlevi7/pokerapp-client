@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 
 function EndGameModal({ players, currency, onClose, onConfirm }) {
   const [finalStacks, setFinalStacks] = useState(() => {
@@ -20,7 +21,7 @@ function EndGameModal({ players, currency, onClose, onConfirm }) {
     // basic validation
     for (const val of Object.values(finalStacks)) {
       if (val === "" || Number(val) < 0) {
-        alert("Please enter valid chip amounts for all players");
+        toast.error("Please enter valid chip amounts for all players");
         return;
       }
     }
