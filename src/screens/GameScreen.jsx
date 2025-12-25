@@ -51,17 +51,12 @@ const [rebuyHistory, setRebuyHistory] = useState([]);
         setGame((prev) => ({ ...prev, status: newStatus }));
 
         if (newStatus === "active") {
-          setElapsedTime(0);
           setTimerRunning(true);
         }
 
-        if (newStatus === "finished") {
-          setTimerRunning(false);
-          setGame((prev) => ({
-            ...prev,
-            duration: elapsedTime
-          }));
-        }
+if (newStatus === "finished") {
+  setTimerRunning(false);
+}
 
         toast.success(
         newStatus === "active" ? "Game started!" : "Game finished!"
@@ -191,7 +186,6 @@ setRebuyHistory(prev => [
   }
 ]);
 
-
     // ✅ עדכון state מקומי רק אחרי הצלחה
     setRebuyCounts((prev) => ({
       ...prev,
@@ -269,6 +263,30 @@ useEffect(() => {
 
   load();
 }, [gameId]);
+
+  /* ============================================================
+   INIT TIMER FROM DB (CRITICAL)
+============================================================ */
+useEffect(() => {
+  if (!game) return;
+
+  if (game.status === "active" && game.started_at) {
+const startedAt =
+  new Date(game.started_at).getTime() -
+  new Date().getTimezoneOffset() * 60 * 1000;
+    const now = Date.now();
+    const seconds = Math.floor((now - startedAt) / 1000);
+
+    setElapsedTime(seconds);
+    setTimerRunning(true);
+  }
+
+  if (game.status === "finished" && game.duration_seconds != null) {
+    setElapsedTime(Math.floor(game.duration_seconds));
+    setTimerRunning(false);
+  }
+}, [game]);
+
 
   if (!game) {
     return (
@@ -368,9 +386,13 @@ useEffect(() => {
             <p><strong>Total Money in Table:</strong> {totalMoneyInTable} {settings.currency}</p>
             <p><strong>Buy-In:</strong> {settings.buyIn} {settings.currency}</p>
 
-            {game.status === "finished" && game.duration !== undefined && (
-              <p><strong>Duration:</strong> {formatTime(game.duration)}</p>
-            )}
+{game.status === "finished" && game.duration_seconds != null && (
+  <p>
+    <strong>Duration:</strong>{" "}
+    {formatTime(Math.floor(game.duration_seconds))}
+  </p>
+)}
+
           </div>
 
 <h2 className="section-title">Rebuy History</h2>
