@@ -100,7 +100,10 @@ function GroupGamesScreen() {
           ) : (
             <ul className="member-list">
               {games.map((game) => (
-                <li key={game.id} className="member-item">
+                <li
+  key={game.id}
+  className={`member-item game-item game-${game.status}`}
+>
                   <div>
                     <strong>Game #{game.id}</strong>
                   </div>
