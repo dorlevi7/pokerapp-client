@@ -116,6 +116,12 @@ function GameScreen() {
   function openRebuyModal(playerId) {
     const settings = game.settings;
 
+    // ⛔ Safety check – rebuy not allowed
+    if (settings.gameType !== "cash" || settings.allowRebuy !== true) {
+      toast.error("Rebuy is not allowed in this game.");
+      return;
+    }
+
     const current = rebuyCounts[playerId] || 0;
     const max = Number(settings.maxRebuysAllowed);
 
@@ -148,6 +154,11 @@ function GameScreen() {
   async function confirmRebuy() {
     const { playerId, amount } = rebuyModal;
     const settings = game.settings;
+
+      if (settings.gameType !== "cash" || settings.allowRebuy !== true) {
+        toast.error("Rebuy is not allowed.");
+        return;
+      }
 
     // ✅ Validate range
     if (settings.rebuyType === "range") {
@@ -448,16 +459,26 @@ Expected: ${expectedTotal} ${game.settings.currency}`
     }
   }, [game]);
 
-if (loading) {
-  return (
-    <>
-      <NavBar />
-      <Loader />
-    </>
-  );
-}
+  if (loading) {
+    return (
+      <>
+        <NavBar />
+        <Loader />
+      </>
+    );
+  }
 
   const settings = game.settings || {};
+
+  // ✅ Can rebuy only in active cash games with rebuy enabled
+  const canRebuy =
+    game.status === "active" &&
+    !gameLocked &&
+    settings.gameType === "cash" &&
+    settings.allowRebuy === true;
+
+    const isRebuyGame =
+      settings.gameType === "cash" && settings.allowRebuy === true;
 
   /* ============================================================
      SUMMARY
@@ -478,9 +499,7 @@ if (loading) {
 
       <div className="game-screen-container">
         <div className="game-card">
-<h1 className="title">
-  GAME #{gameNumberInGroup ?? gameId}
-</h1>
+          <h1 className="title">GAME #{gameNumberInGroup ?? gameId}</h1>
 
           <p className="subtitle">{groupName || `Group #${groupId}`}</p>
 
@@ -560,7 +579,7 @@ if (loading) {
                     <span className="player-name">{p.username}</span>
                   </div>
 
-                  {game.status === "active" && !gameLocked && !gameLocked && (
+                  {canRebuy && (
                     <button
                       className={`rebuy-btn ${maxReached ? "maxed" : ""}`}
                       disabled={maxReached}
@@ -575,9 +594,12 @@ if (loading) {
                       <strong>Buy-in:</strong> {settings.buyIn}{" "}
                       {settings.currency}
                     </p>
-                    <p>
-                      <strong>Rebuys:</strong> {rebuys}
-                    </p>
+                    {isRebuyGame && (
+                      <p>
+                        <strong>Rebuys:</strong> {rebuys}
+                      </p>
+                    )}
+
                     <p>
                       <strong>Total Spent:</strong> {spent} {settings.currency}
                     </p>
@@ -593,9 +615,11 @@ if (loading) {
             <p>
               <strong>Players:</strong> {players.length}
             </p>
-            <p>
-              <strong>Total Rebuys:</strong> {totalRebuys}
-            </p>
+            {isRebuyGame && (
+              <p>
+                <strong>Total Rebuys:</strong> {totalRebuys}
+              </p>
+            )}
             <p>
               <strong>Total Money in Table:</strong> {totalMoneyInTable}{" "}
               {settings.currency}
@@ -646,30 +670,34 @@ if (loading) {
             )}
           </div>
 
-          <h2 className="section-title">Rebuy History</h2>
+          {isRebuyGame && (
+            <>
+              <h2 className="section-title">Rebuy History</h2>
 
-          <div className="rebuy-history-box">
-            {rebuyHistory.length === 0 ? (
-              <p className="empty-text">No rebuys yet</p>
-            ) : (
-              <ul className="rebuy-history">
-                {rebuyHistory.map((r, index) => (
-                  <li key={index} className="rebuy-item">
-                    <div className="rebuy-main">
-                      <span className="rebuy-user">{r.username}</span>
-                      <span className="rebuy-amount">
-                        +{r.amount} {settings.currency}
-                      </span>
-                    </div>
+              <div className="rebuy-history-box">
+                {rebuyHistory.length === 0 ? (
+                  <p className="empty-text">No rebuys yet</p>
+                ) : (
+                  <ul className="rebuy-history">
+                    {rebuyHistory.map((r, index) => (
+                      <li key={index} className="rebuy-item">
+                        <div className="rebuy-main">
+                          <span className="rebuy-user">{r.username}</span>
+                          <span className="rebuy-amount">
+                            +{r.amount} {settings.currency}
+                          </span>
+                        </div>
 
-                    <div className="rebuy-time">
-                      ⏱ {formatTime(r.secondsFromStart)}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+                        <div className="rebuy-time">
+                          ⏱ {formatTime(r.secondsFromStart)}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </>
+          )}
 
           <h2 className="section-title">Game Settings</h2>
 
