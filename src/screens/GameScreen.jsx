@@ -46,6 +46,10 @@ function GameScreen() {
 
   const [finalResultsModalOpen, setFinalResultsModalOpen] = useState(false);
 
+  const [gameNumberInGroup, setGameNumberInGroup] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+
   const API_BASE_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
@@ -396,8 +400,29 @@ Expected: ${expectedTotal} ${game.settings.currency}`
             }
           }
         }
+
+        // 🔹 4. Calculate game number inside group (DISPLAY ONLY)
+        const gamesRes = await fetch(
+          `${API_BASE_URL}/api/groups/${groupId}/games`
+        );
+        const gamesData = await gamesRes.json();
+
+        if (gamesData.success) {
+          // סדר כרונולוגי (ישן → חדש)
+          const sortedGames = [...gamesData.data].sort(
+            (a, b) => new Date(a.created_at) - new Date(b.created_at)
+          );
+
+          const index = sortedGames.findIndex((g) => g.id === Number(gameId));
+
+          if (index !== -1) {
+            setGameNumberInGroup(index + 1);
+          }
+        }
       } catch (err) {
         console.error("Error loading game:", err);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -426,14 +451,14 @@ Expected: ${expectedTotal} ${game.settings.currency}`
     }
   }, [game]);
 
-  if (!game) {
-    return (
-      <>
-        <NavBar />
-        <Loader />
-      </>
-    );
-  }
+if (loading) {
+  return (
+    <>
+      <NavBar />
+      <Loader />
+    </>
+  );
+}
 
   const settings = game.settings || {};
 
@@ -456,7 +481,9 @@ Expected: ${expectedTotal} ${game.settings.currency}`
 
       <div className="game-screen-container">
         <div className="game-card">
-          <h1 className="title">GAME #{gameId}</h1>
+<h1 className="title">
+  GAME #{gameNumberInGroup ?? gameId}
+</h1>
 
           <p className="subtitle">{groupName || `Group #${groupId}`}</p>
 
