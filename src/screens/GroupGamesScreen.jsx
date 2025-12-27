@@ -4,6 +4,8 @@ import NavBar from "../components/NavBar";
 import "../styles/GroupScreen.css";
 import Loader from "../components/Loader";
 
+import { API_BASE_URL } from "../config/api";
+
 function GroupGamesScreen() {
   const { groupId } = useParams();
   const navigate = useNavigate();
@@ -11,11 +13,6 @@ function GroupGamesScreen() {
   const [games, setGames] = useState([]);
   const [groupName, setGroupName] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   /* ============================================================
      LOAD GROUP GAMES + GROUP NAME

@@ -4,6 +4,8 @@ import "../styles/App.css";
 import "../styles/SignupScreen.css";
 import { toast } from "react-hot-toast";
 
+import { API_BASE_URL } from "../config/api";
+
 function SignupScreen() {
   const navigate = useNavigate();
 
@@ -17,11 +19,6 @@ function SignupScreen() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   const handleChange = (e) => {
     setFormData({

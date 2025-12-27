@@ -7,15 +7,12 @@ import NavBar from "../components/NavBar";
 import EditProfileModal from "../components/EditProfileModal";
 import { toast } from "react-hot-toast"; // ⭐ NEW
 
+import { API_BASE_URL } from "../config/api";
+
 function ProfileScreen() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

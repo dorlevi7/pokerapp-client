@@ -4,6 +4,8 @@ import NavBar from "../components/NavBar";
 import "../styles/CreateGroup.css";
 import { toast } from "react-hot-toast";
 
+import { API_BASE_URL } from "../config/api";
+
 function CreateGroup() {
   const navigate = useNavigate();
 
@@ -11,11 +13,6 @@ function CreateGroup() {
   const [playerInput, setPlayerInput] = useState("");
   const [players, setPlayers] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   /* ============================================================
      🟢 Add Player

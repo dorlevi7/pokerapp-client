@@ -6,6 +6,8 @@ import "../styles/GameSettingsScreen.css";
 import Loader from "../components/Loader";
 import { toast } from "react-hot-toast";
 
+import { API_BASE_URL } from "../config/api";
+
 /* ============================================================
    📌 Accordion Component — clean, minimal, professional
    ============================================================ */
@@ -75,11 +77,6 @@ function GameSettingsScreen() {
   const [notes, setNotes] = useState("");
 
   const [loading, setLoading] = useState(true);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   /* ============================================================
      📌 Fetch Group Members

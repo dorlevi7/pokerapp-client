@@ -6,16 +6,13 @@ import "../styles/MyGroups.css";
 
 import Loader from "../components/Loader";
 
+import { API_BASE_URL } from "../config/api";
+
 function MyGroups() {
   const navigate = useNavigate();
 
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   /* ============================================================
      LOAD USER GROUPS

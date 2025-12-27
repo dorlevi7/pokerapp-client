@@ -5,6 +5,8 @@ import "../styles/App.css";
 import "../styles/LoginScreen.css";
 import { toast } from "react-hot-toast"; // ⭐ NEW
 
+import { API_BASE_URL } from "../config/api";
+
 function LoginScreen() {
   const navigate = useNavigate();
 
@@ -14,12 +16,6 @@ function LoginScreen() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  // ✅ Detect environment (local or production)
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   const handleChange = (e) => {
     setFormData({

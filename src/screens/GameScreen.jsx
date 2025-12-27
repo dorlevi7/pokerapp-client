@@ -9,6 +9,8 @@ import EndGameModal from "../components/EndGameModal";
 
 import FinalResultsModal from "../components/FinalResultsModal";
 
+import { API_BASE_URL } from "../config/api";
+
 function GameScreen() {
   const { groupId, gameId } = useParams();
 
@@ -49,11 +51,6 @@ function GameScreen() {
   const [gameNumberInGroup, setGameNumberInGroup] = useState(null);
 
   const [loading, setLoading] = useState(true);
-
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://pokerapp-server.onrender.com";
 
   /* ============================================================
      UPDATE GAME STATUS (start/finish)
