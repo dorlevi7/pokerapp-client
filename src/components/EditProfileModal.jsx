@@ -21,7 +21,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
   const handleSubmit = async () => {
     try {
       setIsSaving(true);
-      await onSave(form); // onSave צריך להחזיר Promise
+      await onSave(form);
       onClose();
     } finally {
       setIsSaving(false);
@@ -29,19 +29,19 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
   };
 
   return (
-    <>
+    <div className="edit-profile-modal">
       {/* Background blur overlay */}
       <div
         className="editProfile-modal-overlay"
         onClick={isSaving ? undefined : onClose}
       />
 
-      {/* Actual modal card */}
+      {/* Modal card */}
       <div className="modal-card">
         <h2>Edit Profile</h2>
 
         <div className="modal-row">
-          <label>First Name:</label>
+          <label>First Name</label>
           <input
             name="firstName"
             value={form.firstName}
@@ -51,7 +51,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
 
         <div className="modal-row">
-          <label>Last Name:</label>
+          <label>Last Name</label>
           <input
             name="lastName"
             value={form.lastName}
@@ -61,7 +61,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
 
         <div className="modal-row">
-          <label>Username:</label>
+          <label>Username</label>
           <input
             name="username"
             value={form.username}
@@ -71,7 +71,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
 
         <div className="modal-row">
-          <label>Email:</label>
+          <label>Email</label>
           <input
             name="email"
             value={form.email}
@@ -81,7 +81,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
 
         <div className="modal-row">
-          <label>New Password:</label>
+          <label>New Password</label>
           <input
             name="password"
             value={form.password}
@@ -109,7 +109,7 @@ function EditProfileModal({ isOpen, onClose, user, onSave }) {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
